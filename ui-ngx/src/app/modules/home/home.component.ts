@@ -29,7 +29,11 @@ import * as _screenfull from 'screenfull';
 import { MatSidenav } from '@angular/material/sidenav';
 import { AuthState } from '@core/auth/auth.models';
 import { WINDOW } from '@core/services/window.service';
+import { AttributeService } from '@core/http/attribute.service';
 import { instanceOfSearchableComponent, ISearchableComponent } from '@home/models/searchable-component.models';
+import { AttributeScope } from "@shared/models/telemetry/telemetry.models";
+import { EntityId } from '@shared/models/id/entity-id';
+import { EntityType } from '@app/shared/public-api';
 
 const screenfull = _screenfull as _screenfull.Screenfull;
 
@@ -50,7 +54,14 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
   sidenavMode: 'over' | 'push' | 'side' = 'side';
   sidenavOpened = true;
 
-  logo = 'assets/logo_title_white.svg';
+  logo ='assets/logo_sibelianthe.svg';
+  whiteLabelingKeys = {
+    logo: 'Logo',
+    favicon: 'favicon',
+    primaryColor: 'primary_color',
+    secondaryColor: 'secondary_color',
+    hueColor: 'hue3_color'
+  };
 
   @ViewChild('sidenav')
   sidenav: MatSidenav;
@@ -68,6 +79,7 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
   searchText = '';
 
   constructor(protected store: Store<AppState>,
+              private attributeService: AttributeService,
               @Inject(WINDOW) private window: Window,
               public breakpointObserver: BreakpointObserver) {
     super(store);
@@ -80,6 +92,37 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
     this.userDetailsString = this.userDetails$.pipe(map((user: User) => {
       return JSON.stringify(user);
     }));
+
+    this.authUser$.subscribe(user => {
+      if (user && ['TENANT_ADMIN', 'CUSTOMER_USER'].includes(user.scopes[0])) {
+        let entity: EntityId = { entityType: EntityType.TENANT, id: ''};
+        if (user.scopes.includes('TENANT_ADMIN')) {
+          entity.id = user.tenantId;
+        } else if (user.scopes.includes('CUSTOMER_USER')) {
+          entity.entityType = EntityType.CUSTOMER;
+          entity.id = user.customerId;
+        }
+        this.attributeService.getEntityAttributes(entity, AttributeScope.SERVER_SCOPE, Object.values(this.whiteLabelingKeys)).subscribe( attrs => {
+          const logo = attrs.find(e => e.key === this.whiteLabelingKeys.logo)?.value
+          if (logo) this.logo = logo;
+          const favicon = attrs.find(e => e.key === this.whiteLabelingKeys.favicon)?.value
+          const faviconTag = document.getElementById('favicon')
+          if (favicon && faviconTag) {
+            faviconTag.setAttribute('href', favicon);
+          }
+          const primaryColor = attrs.find(e => e.key === this.whiteLabelingKeys.primaryColor)?.value
+          const secondaryColor = attrs.find(e => e.key === this.whiteLabelingKeys.secondaryColor)?.value
+          const hueColor = attrs.find(e => e.key === this.whiteLabelingKeys.hueColor)?.value
+          
+          if (primaryColor) document.documentElement.style.setProperty('--primary-color', primaryColor);
+          if (secondaryColor) document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+          if (hueColor) document.documentElement.style.setProperty('--hue3-color', hueColor);
+        }, err => {
+          console.warn('Customer has no SERVER_SCOPE attributes', err);
+        });
+      }
+    })
+
 
     const isGtSm = this.breakpointObserver.isMatched(MediaBreakpoints['gt-sm']);
     this.sidenavMode = isGtSm ? 'side' : 'over';
