@@ -1826,7 +1826,7 @@
             "file-storage": "Almacén fichero",
             "memory-storage": "Almacén en memoria"
         },
-        "thingsboard": "ThingsBoard",
+        "thingsboard": "My Smart Process",
         "thingsboard-host": "Host ThingsBoard",
         "thingsboard-host-required": "Se requiere Host.",
         "thingsboard-port": "Puerto ThingsBoard",

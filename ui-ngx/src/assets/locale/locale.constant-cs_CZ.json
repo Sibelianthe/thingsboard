@@ -2122,7 +2122,7 @@
             "file-storage": "Soubor",
             "memory-storage": "Paměť"
         },
-        "thingsboard": "ThingsBoard",
+        "thingsboard": "My Smart Process",
         "thingsboard-host": "Host ThingsBoard",
         "thingsboard-host-required": "Host je povinný.",
         "thingsboard-port": "Port ThingsBoard",

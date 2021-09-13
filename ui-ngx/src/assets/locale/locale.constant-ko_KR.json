@@ -1653,7 +1653,7 @@
             "file-storage": "File storage",
             "memory-storage": "Memory storage"
         },
-        "thingsboard": "ThingsBoard",
+        "thingsboard": "My Smart Process",
         "thingsboard-host": "ThingsBoard host",
         "thingsboard-host-required": "Host is required.",
         "thingsboard-port": "ThingsBoard port",
