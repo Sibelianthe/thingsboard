@@ -22,11 +22,19 @@
   --primary-color: #305680;
   --secondary-color: #527dad;
   --hue3-color: #a7c1de;
+
+  --primary-accent: #ff5722;
+  --secondary-accent: #f4511e;
+  --hue3-accent: #ff9e80;
 }
 
 $tb-primary-color: var(--primary-color);
 $tb-secondary-color: var(--secondary-color);
 $tb-hue3-color: var(--hue3-color);
+
+$tb-primary-accent: var(--primary-accent);
+$tb-secondary-accent: var(--secondary-accent);
+$tb-hue3-accent: var(--hue3-accent);
 
 $tb-dark-primary-color: #9fa8da;
 
@@ -63,8 +71,14 @@ $tb-mat-indigo: (
   )
 );
 
+$tb-mat-accent: (
+  500: $tb-primary-accent,
+  600: $tb-secondary-accent,
+  A100: $tb-hue3-accent,
+);
+
 $tb-primary: mat-palette($tb-mat-indigo);
-$tb-accent: mat-palette($mat-deep-orange);
+$tb-accent: mat-palette(map_merge($mat-deep-orange, $tb-mat-accent));
 
 $background: (background: map_get($mat-grey, 200));
 
@@ -242,6 +256,10 @@ $tb-dark-theme: get-tb-dark-theme(
   @include mat-datetimepicker-theme($tb-dark-theme);
   @include tb-components-theme($tb-theme);
 }
+
+// .sibelianthe-theme {
+//   @include angular-material-theme($mat-deep-purple);
+// }
 
 .tb-dark {
   @include angular-material-theme($tb-dark-theme);

@@ -60,7 +60,10 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
     favicon: 'favicon',
     primaryColor: 'primary_color',
     secondaryColor: 'secondary_color',
-    hueColor: 'hue3_color'
+    hueColor: 'hue3_color',
+    primaryAccent: 'primary_accent',
+    secondaryAccent: 'secondary_accent',
+    hueAccent: 'hue3_accent',
   };
 
   @ViewChild('sidenav')
@@ -117,6 +120,14 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
           if (primaryColor) document.documentElement.style.setProperty('--primary-color', primaryColor);
           if (secondaryColor) document.documentElement.style.setProperty('--secondary-color', secondaryColor);
           if (hueColor) document.documentElement.style.setProperty('--hue3-color', hueColor);
+
+          const primaryAccent = attrs.find(e => e.key === this.whiteLabelingKeys.primaryAccent)?.value
+          const secondaryAccent = attrs.find(e => e.key === this.whiteLabelingKeys.secondaryAccent)?.value
+          const hueAccent = attrs.find(e => e.key === this.whiteLabelingKeys.hueAccent)?.value
+          
+          if (primaryAccent) document.documentElement.style.setProperty('--primary-accent', primaryAccent);
+          if (secondaryAccent) document.documentElement.style.setProperty('--secondary-accent', secondaryAccent);
+          if (hueAccent) document.documentElement.style.setProperty('--hue3-accent', hueAccent);
         }, err => {
           console.warn('Customer has no SERVER_SCOPE attributes', err);
         });
