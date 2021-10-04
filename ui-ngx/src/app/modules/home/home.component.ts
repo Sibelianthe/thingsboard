@@ -58,12 +58,9 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
   whiteLabelingKeys = {
     logo: 'Logo',
     favicon: 'favicon',
-    primaryColor: 'primary_color',
-    secondaryColor: 'secondary_color',
-    hueColor: 'hue3_color',
-    primaryAccent: 'primary_accent',
-    secondaryAccent: 'secondary_accent',
-    hueAccent: 'hue3_accent',
+    primaryPalette: 'prim',
+    accentPalette: 'acc',
+    warnPalette: 'warn',
   };
 
   @ViewChild('sidenav')
@@ -113,21 +110,16 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
           if (favicon && faviconTag) {
             faviconTag.setAttribute('href', favicon);
           }
-          const primaryColor = attrs.find(e => e.key === this.whiteLabelingKeys.primaryColor)?.value
-          const secondaryColor = attrs.find(e => e.key === this.whiteLabelingKeys.secondaryColor)?.value
-          const hueColor = attrs.find(e => e.key === this.whiteLabelingKeys.hueColor)?.value
           
-          if (primaryColor) document.documentElement.style.setProperty('--primary-color', primaryColor);
-          if (secondaryColor) document.documentElement.style.setProperty('--secondary-color', secondaryColor);
-          if (hueColor) document.documentElement.style.setProperty('--hue3-color', hueColor);
+          const primaryPalette = attrs.find(e => e.key === this.whiteLabelingKeys.primaryPalette)?.value
+          if (primaryPalette) this.setPalette(JSON.parse(primaryPalette), 'prim');
+          
+          const accentPalette = attrs.find(e => e.key === this.whiteLabelingKeys.accentPalette)?.value
+          if (accentPalette) this.setPalette(JSON.parse(accentPalette), 'acc');
+          
+          const warnPalette = attrs.find(e => e.key === this.whiteLabelingKeys.warnPalette)?.value
+          if (warnPalette) this.setPalette(JSON.parse(warnPalette), 'warn');
 
-          const primaryAccent = attrs.find(e => e.key === this.whiteLabelingKeys.primaryAccent)?.value
-          const secondaryAccent = attrs.find(e => e.key === this.whiteLabelingKeys.secondaryAccent)?.value
-          const hueAccent = attrs.find(e => e.key === this.whiteLabelingKeys.hueAccent)?.value
-          
-          if (primaryAccent) document.documentElement.style.setProperty('--primary-accent', primaryAccent);
-          if (secondaryAccent) document.documentElement.style.setProperty('--secondary-accent', secondaryAccent);
-          if (hueAccent) document.documentElement.style.setProperty('--hue3-accent', hueAccent);
         }, err => {
           console.warn('Customer has no SERVER_SCOPE attributes', err);
         });
@@ -225,6 +217,27 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
   private searchTextUpdated() {
     if (this.searchableComponent) {
       this.searchableComponent.onSearchTextUpdated(this.searchText);
+    }
+  }
+
+  private setPalette(palette, name) {
+    const darkTextColor = document.documentElement.style.getPropertyValue('--dark-text');
+    const lightTextColor = document.documentElement.style.getPropertyValue('--light-text');
+    for (let color of palette) {
+      
+      // Construct the variable name from palette name + color tint
+      const cssVarName = `--${name}-${color.name}`;
+
+      // Set the variable to its value
+      document.documentElement.style.setProperty(cssVarName, color.hex);
+
+      // Check if contrast is dark or light
+      let textColor = lightTextColor;
+      if (color.darkContrast === true) {
+        textColor = darkTextColor;
+      }
+      document.documentElement.style.setProperty(cssVarName + '-text', textColor);
+
     }
   }
 }
