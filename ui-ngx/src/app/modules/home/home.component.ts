@@ -34,6 +34,7 @@ import { instanceOfSearchableComponent, ISearchableComponent } from '@home/model
 import { AttributeScope } from "@shared/models/telemetry/telemetry.models";
 import { EntityId } from '@shared/models/id/entity-id';
 import { EntityType } from '@app/shared/public-api';
+import { MenuService } from '@app/core/public-api';
 
 const screenfull = _screenfull as _screenfull.Screenfull;
 
@@ -54,7 +55,8 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
   sidenavMode: 'over' | 'push' | 'side' = 'side';
   sidenavOpened = true;
 
-  logo ='assets/logo_sibelianthe.svg';
+  logo ='assets/LogoMySMartProcess.svg';
+  favicon = 'assets/favicon.ico';
   whiteLabelingKeys = {
     logo: 'Logo',
     favicon: 'favicon',
@@ -78,15 +80,25 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
   showSearch = false;
   searchText = '';
 
+  showText = true;
+
   constructor(protected store: Store<AppState>,
               private attributeService: AttributeService,
               @Inject(WINDOW) private window: Window,
-              public breakpointObserver: BreakpointObserver) {
+              public breakpointObserver: BreakpointObserver,
+              private menuService: MenuService) {
     super(store);
   }
+  
+  updateShowText() {
+    this.showText = !this.showText;
+    this.menuService.updateShowText(this.showText);
+  }
+
 
   ngOnInit() {
 
+    this.menuService.updateShowText(this.showText);
     this.authUser$ = this.store.pipe(select(selectAuthUser));
     this.userDetails$ = this.store.pipe(select(selectUserDetails));
     this.userDetailsString = this.userDetails$.pipe(map((user: User) => {
@@ -109,6 +121,7 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
           const faviconTag = document.getElementById('favicon')
           if (favicon && faviconTag) {
             faviconTag.setAttribute('href', favicon);
+            this.favicon = favicon
           }
           
           const primaryPalette = attrs.find(e => e.key === this.whiteLabelingKeys.primaryPalette)?.value

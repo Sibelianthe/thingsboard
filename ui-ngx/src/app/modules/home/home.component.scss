@@ -25,6 +25,11 @@
   mat-sidenav-container {
     flex: 1;
   }
+
+  mat-sidenav-content {
+    transition: all 0.2s ease-in-out;
+  }
+
   mat-sidenav.tb-site-sidenav {
     width: 250px;
     @media (max-width:456px) {

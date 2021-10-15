@@ -805,6 +805,7 @@ mat-label {
 
   .mat-drawer-side {
     border: none;
+    transition: all 0.2s ease-in-out;
   }
 
   .mat-drawer-inner-container {

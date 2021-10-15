@@ -33,18 +33,21 @@ export class MenuService {
 
   menuSections$: Subject<Array<MenuSection>> = new BehaviorSubject<Array<MenuSection>>([]);
   homeSections$: Subject<Array<HomeSection>> = new BehaviorSubject<Array<HomeSection>>([]);
+  showText$: Subject<boolean> = new BehaviorSubject<boolean>(true);
 
   constructor(private store: Store<AppState>, private authService: AuthService) {
     this.store.pipe(select(selectIsAuthenticated)).subscribe(
       (authenticated: boolean) => {
-        if (authenticated) {
-          this.buildMenu();
-        }
+        this.showText$.subscribe(showText => {
+          if (authenticated) {
+            this.buildMenu(showText);
+          }
+        });
       }
     );
   }
-
-  private buildMenu() {
+  
+  private buildMenu(showText: boolean) {
     this.store.pipe(select(selectAuth), take(1)).subscribe(
       (authState: AuthState) => {
         if (authState.authUser) {
@@ -52,16 +55,16 @@ export class MenuService {
           let homeSections: Array<HomeSection>;
           switch (authState.authUser.authority) {
             case Authority.SYS_ADMIN:
-              menuSections = this.buildSysAdminMenu(authState);
-              homeSections = this.buildSysAdminHome(authState);
+              menuSections = this.buildSysAdminMenu(authState, showText);
+              homeSections = this.buildSysAdminHome(authState, showText);
               break;
             case Authority.TENANT_ADMIN:
-              menuSections = this.buildTenantAdminMenu(authState);
-              homeSections = this.buildTenantAdminHome(authState);
+              menuSections = this.buildTenantAdminMenu(authState, showText);
+              homeSections = this.buildTenantAdminHome(authState, showText);
               break;
             case Authority.CUSTOMER_USER:
-              menuSections = this.buildCustomerUserMenu(authState);
-              homeSections = this.buildCustomerUserHome(authState);
+              menuSections = this.buildCustomerUserMenu(authState, showText);
+              homeSections = this.buildCustomerUserHome(authState, showText);
               break;
           }
           this.menuSections$.next(menuSections);
@@ -71,7 +74,7 @@ export class MenuService {
     );
   }
 
-  private buildSysAdminMenu(authState: AuthState): Array<MenuSection> {
+  private buildSysAdminMenu(authState: AuthState, showText): Array<MenuSection> {
     const sections: Array<MenuSection> = [];
     sections.push(
       {
@@ -79,14 +82,16 @@ export class MenuService {
         name: 'home.home',
         type: 'link',
         path: '/home',
-        icon: 'home'
+        icon: 'home',
+        showText,
       },
       {
         id: guid(),
         name: 'tenant.tenants',
         type: 'link',
         path: '/tenants',
-        icon: 'supervisor_account'
+        icon: 'supervisor_account',
+        showText,
       },
       {
         id: guid(),
@@ -94,14 +99,16 @@ export class MenuService {
         type: 'link',
         path: '/tenantProfiles',
         icon: 'mdi:alpha-t-box',
-        isMdiIcon: true
+        isMdiIcon: true,
+        showText,
       },
       {
         id: guid(),
         name: 'widget.widget-library',
         type: 'link',
         path: '/widgets-bundles',
-        icon: 'now_widgets'
+        icon: 'now_widgets',
+        showText,
       },
       {
         id: guid(),
@@ -110,48 +117,55 @@ export class MenuService {
         path: '/settings',
         height: '240px',
         icon: 'settings',
+        showText,
         pages: [
           {
             id: guid(),
             name: 'admin.general',
             type: 'link',
             path: '/settings/general',
-            icon: 'settings_applications'
+            icon: 'settings_applications',
+            showText,
           },
           {
             id: guid(),
             name: 'admin.outgoing-mail',
             type: 'link',
             path: '/settings/outgoing-mail',
-            icon: 'mail'
+            icon: 'mail',
+            showText,
           },
           {
             id: guid(),
             name: 'admin.sms-provider',
             type: 'link',
             path: '/settings/sms-provider',
-            icon: 'sms'
+            icon: 'sms',
+            showText,
           },
           {
             id: guid(),
             name: 'admin.security-settings',
             type: 'link',
             path: '/settings/security-settings',
-            icon: 'security'
+            icon: 'security',
+            showText,
           },
           {
             id: guid(),
             name: 'admin.oauth2.oauth2',
             type: 'link',
             path: '/settings/oauth2',
-            icon: 'security'
+            icon: 'security',
+            showText,
           },
           {
             id: guid(),
             name: 'resource.resources-library',
             type: 'link',
             path: '/settings/resources-library',
-            icon: 'folder'
+            icon: 'folder',
+            showText,
           }
         ]
       }
@@ -159,7 +173,7 @@ export class MenuService {
     return sections;
   }
 
-  private buildSysAdminHome(authState: AuthState): Array<HomeSection> {
+  private buildSysAdminHome(authState: AuthState, showText): Array<HomeSection> {
     const homeSections: Array<HomeSection> = [];
     homeSections.push(
       {
@@ -176,7 +190,8 @@ export class MenuService {
             isMdiIcon: true,
             path: '/tenantProfiles'
           },
-        ]
+        ],
+        showText,
       },
       {
         name: 'widget.management',
@@ -186,40 +201,48 @@ export class MenuService {
             icon: 'now_widgets',
             path: '/widgets-bundles'
           }
-        ]
+        ],
+        showText,
       },
       {
         name: 'admin.system-settings',
+        showText,
         places: [
           {
             name: 'admin.general',
             icon: 'settings_applications',
-            path: '/settings/general'
+            path: '/settings/general',
+            showText,
           },
           {
             name: 'admin.outgoing-mail',
             icon: 'mail',
-            path: '/settings/outgoing-mail'
+            path: '/settings/outgoing-mail',
+            showText,
           },
           {
             name: 'admin.sms-provider',
             icon: 'sms',
-            path: '/settings/sms-provider'
+            path: '/settings/sms-provider',
+            showText,
           },
           {
             name: 'admin.security-settings',
             icon: 'security',
-            path: '/settings/security-settings'
+            path: '/settings/security-settings',
+            showText,
           },
           {
             name: 'admin.oauth2.oauth2',
             icon: 'security',
-            path: '/settings/oauth2'
+            path: '/settings/oauth2',
+            showText,
           },
           {
             name: 'resource.resources-library',
             icon: 'folder',
-            path: '/settings/resources-library'
+            path: '/settings/resources-library',
+            showText,
           }
         ]
       }
@@ -227,7 +250,7 @@ export class MenuService {
     return homeSections;
   }
 
-  private buildTenantAdminMenu(authState: AuthState): Array<MenuSection> {
+  private buildTenantAdminMenu(authState: AuthState, showText): Array<MenuSection> {
     const sections: Array<MenuSection> = [];
     sections.push(
       {
@@ -236,35 +259,40 @@ export class MenuService {
         type: 'link',
         path: '/home',
         notExact: true,
-        icon: 'home'
+        icon: 'home',
+        showText,
       },
       {
         id: guid(),
         name: 'rulechain.rulechains',
         type: 'link',
         path: '/ruleChains',
-        icon: 'settings_ethernet'
+        icon: 'settings_ethernet',
+        showText,
       },
       {
         id: guid(),
         name: 'customer.customers',
         type: 'link',
         path: '/customers',
-        icon: 'supervisor_account'
+        icon: 'supervisor_account',
+        showText,
       },
       {
         id: guid(),
         name: 'asset.assets',
         type: 'link',
         path: '/assets',
-        icon: 'domain'
+        icon: 'domain',
+        showText,
       },
       {
         id: guid(),
         name: 'device.devices',
         type: 'link',
         path: '/devices',
-        icon: 'devices_other'
+        icon: 'devices_other',
+        showText,
       },
       {
         id: guid(),
@@ -272,21 +300,24 @@ export class MenuService {
         type: 'link',
         path: '/deviceProfiles',
         icon: 'mdi:alpha-d-box',
-        isMdiIcon: true
+        isMdiIcon: true,
+        showText,
       },
       {
         id: guid(),
         name: 'ota-update.ota-updates',
         type: 'link',
         path: '/otaUpdates',
-        icon: 'memory'
+        icon: 'memory',
+        showText,
       },
       {
         id: guid(),
         name: 'entity-view.entity-views',
         type: 'link',
         path: '/entityViews',
-        icon: 'view_quilt'
+        icon: 'view_quilt',
+        showText,
       }
     );
     if (authState.edgesSupportEnabled) {
@@ -296,7 +327,8 @@ export class MenuService {
           name: 'edge.edge-instances',
           type: 'link',
           path: '/edgeInstances',
-          icon: 'router'
+          icon: 'router',
+          showText,
         },
         {
           id: guid(),
@@ -305,13 +337,15 @@ export class MenuService {
           path: '/edgeManagement',
           height: '40px',
           icon: 'settings_input_antenna',
+          showText,
           pages: [
             {
               id: guid(),
               name: 'edge.rulechain-templates',
               type: 'link',
               path: '/edgeManagement/ruleChains',
-              icon: 'settings_ethernet'
+              icon: 'settings_ethernet',
+              showText,
             }
           ]
         }
@@ -323,21 +357,24 @@ export class MenuService {
         name: 'widget.widget-library',
         type: 'link',
         path: '/widgets-bundles',
-        icon: 'now_widgets'
+        icon: 'now_widgets',
+        showText,
       },
       {
         id: guid(),
         name: 'dashboard.dashboards',
         type: 'link',
         path: '/dashboards',
-        icon: 'dashboards'
+        icon: 'dashboards',
+        showText,
       },
       {
         id: guid(),
         name: 'audit-log.audit-logs',
         type: 'link',
         path: '/auditLogs',
-        icon: 'track_changes'
+        icon: 'track_changes',
+        showText,
       },
       {
         id: guid(),
@@ -345,7 +382,8 @@ export class MenuService {
         type: 'link',
         path: '/usage',
         icon: 'insert_chart',
-        notExact: true
+        notExact: true,
+        showText,
       },
       {
         id: guid(),
@@ -354,20 +392,23 @@ export class MenuService {
         path: '/settings',
         height: '80px',
         icon: 'settings',
+        showText,
         pages: [
           {
             id: guid(),
             name: 'admin.home-settings',
             type: 'link',
             path: '/settings/home',
-            icon: 'settings_applications'
+            icon: 'settings_applications',
+            showText,
           },
           {
             id: guid(),
             name: 'resource.resources-library',
             type: 'link',
             path: '/settings/resources-library',
-            icon: 'folder'
+            icon: 'folder',
+            showText,
           }
         ]
       }
@@ -375,16 +416,18 @@ export class MenuService {
     return sections;
   }
 
-  private buildTenantAdminHome(authState: AuthState): Array<HomeSection> {
+  private buildTenantAdminHome(authState: AuthState, showText): Array<HomeSection> {
     const homeSections: Array<HomeSection> = [];
     homeSections.push(
       {
         name: 'rulechain.management',
+        showText,
         places: [
           {
             name: 'rulechain.rulechains',
             icon: 'settings_ethernet',
-            path: '/ruleChains'
+            path: '/ruleChains',
+            showText,
           }
         ]
       },
@@ -394,48 +437,57 @@ export class MenuService {
           {
             name: 'customer.customers',
             icon: 'supervisor_account',
-            path: '/customers'
+            path: '/customers',
+            showText,
           }
         ]
       },
       {
         name: 'asset.management',
+        showText,
         places: [
           {
             name: 'asset.assets',
             icon: 'domain',
-            path: '/assets'
+            path: '/assets',
+            showText,
           }
         ]
       },
       {
         name: 'device.management',
+        showText,
         places: [
           {
             name: 'device.devices',
             icon: 'devices_other',
-            path: '/devices'
+            path: '/devices',
+            showText,
           },
           {
             name: 'device-profile.device-profiles',
             icon: 'mdi:alpha-d-box',
             isMdiIcon: true,
-            path: '/deviceProfiles'
+            path: '/deviceProfiles',
+            showText,
           },
           {
             name: 'ota-update.ota-updates',
             icon: 'memory',
-            path: '/otaUpdates'
+            path: '/otaUpdates',
+            showText,
           }
         ]
       },
       {
         name: 'entity-view.management',
+        showText,
         places: [
           {
             name: 'entity-view.entity-views',
             icon: 'view_quilt',
-            path: '/entityViews'
+            path: '/entityViews',
+            showText,
           }
         ]
       }
@@ -462,46 +514,55 @@ export class MenuService {
     homeSections.push(
       {
         name: 'dashboard.management',
+        showText,
         places: [
           {
             name: 'widget.widget-library',
             icon: 'now_widgets',
-            path: '/widgets-bundles'
+            path: '/widgets-bundles',
+            showText,
           },
           {
             name: 'dashboard.dashboards',
             icon: 'dashboard',
-            path: '/dashboards'
+            path: '/dashboards',
+            showText,
           }
         ]
       },
       {
         name: 'audit-log.audit',
+        showText,
         places: [
           {
             name: 'audit-log.audit-logs',
             icon: 'track_changes',
-            path: '/auditLogs'
+            path: '/auditLogs',
+            showText,
           },
           {
             name: 'api-usage.api-usage',
             icon: 'insert_chart',
-            path: '/usage'
+            path: '/usage',
+            showText,
           }
         ]
       },
       {
         name: 'admin.system-settings',
+        showText,
         places: [
           {
             name: 'admin.home-settings',
             icon: 'settings_applications',
-            path: '/settings/home'
+            path: '/settings/home',
+            showText,
           },
           {
             name: 'resource.resources-library',
             icon: 'folder',
-            path: '/settings/resources-library'
+            path: '/settings/resources-library',
+            showText,
           }
         ]
       }
@@ -509,7 +570,7 @@ export class MenuService {
     return homeSections;
   }
 
-  private buildCustomerUserMenu(authState: AuthState): Array<MenuSection> {
+  private buildCustomerUserMenu(authState: AuthState, showText): Array<MenuSection> {
     const sections: Array<MenuSection> = [];
     sections.push(
       {
@@ -518,28 +579,32 @@ export class MenuService {
         type: 'link',
         path: '/home',
         notExact: true,
-        icon: 'home'
+        icon: 'home',
+        showText,
       },
       {
         id: guid(),
         name: 'asset.assets',
         type: 'link',
         path: '/assets',
-        icon: 'domain'
+        icon: 'domain',
+        showText,
       },
       {
         id: guid(),
         name: 'device.devices',
         type: 'link',
         path: '/devices',
-        icon: 'devices_other'
+        icon: 'devices_other',
+        showText,
       },
       {
         id: guid(),
         name: 'entity-view.entity-views',
         type: 'link',
         path: '/entityViews',
-        icon: 'view_quilt'
+        icon: 'view_quilt',
+        showText,
       }
     );
     if (authState.edgesSupportEnabled) {
@@ -549,7 +614,8 @@ export class MenuService {
           name: 'edge.edge-instances',
           type: 'link',
           path: '/edgeInstances',
-          icon: 'router'
+          icon: 'router',
+          showText,
         }
       );
     }
@@ -559,42 +625,49 @@ export class MenuService {
         name: 'dashboard.dashboards',
         type: 'link',
         path: '/dashboards',
-        icon: 'dashboard'
+        icon: 'dashboard',
+        showText,
       }
     );
     return sections;
   }
 
-  private buildCustomerUserHome(authState: AuthState): Array<HomeSection> {
+  private buildCustomerUserHome(authState: AuthState, showText): Array<HomeSection> {
     const homeSections: Array<HomeSection> = [];
     homeSections.push(
       {
         name: 'asset.view-assets',
+        showText,
         places: [
           {
             name: 'asset.assets',
             icon: 'domain',
-            path: '/assets'
+            path: '/assets',
+            showText,
           }
         ]
       },
       {
         name: 'device.view-devices',
+        showText,
         places: [
           {
             name: 'device.devices',
             icon: 'devices_other',
-            path: '/devices'
+            path: '/devices',
+            showText,
           }
         ]
       },
       {
         name: 'entity-view.management',
+        showText,
         places: [
           {
             name: 'entity-view.entity-views',
             icon: 'view_quilt',
-            path: '/entityViews'
+            path: '/entityViews',
+            showText,
           }
         ]
       }
@@ -603,11 +676,13 @@ export class MenuService {
       homeSections.push(
         {
           name: 'edge.management',
+          showText,
           places: [
             {
               name: 'edge.edge-instances',
               icon: 'settings_input_antenna',
-              path: '/edgeInstances'
+              path: '/edgeInstances',
+              showText,
             }
           ]
         }
@@ -616,11 +691,13 @@ export class MenuService {
     homeSections.push(
       {
         name: 'dashboard.view-dashboards',
+        showText,
         places: [
           {
             name: 'dashboard.dashboards',
             icon: 'dashboard',
-            path: '/dashboards'
+            path: '/dashboards',
+            showText,
           }
         ]
       }
@@ -634,6 +711,10 @@ export class MenuService {
 
   public homeSections(): Observable<Array<HomeSection>> {
     return this.homeSections$;
+  }
+
+  public updateShowText(showText: boolean) {
+    this.showText$.next(showText);
   }
 
 }
