@@ -35,6 +35,7 @@ import { AttributeScope } from "@shared/models/telemetry/telemetry.models";
 import { EntityId } from '@shared/models/id/entity-id';
 import { EntityType } from '@app/shared/public-api';
 import { MenuService } from '@app/core/public-api';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 const screenfull = _screenfull as _screenfull.Screenfull;
 
@@ -56,7 +57,7 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
   sidenavOpened = true;
 
   logo ='assets/LogoMySMartProcess.svg';
-  favicon = 'assets/favicon.ico';
+  favicon: SafeUrl = 'assets/favicon.ico';
   whiteLabelingKeys = {
     logo: 'Logo',
     favicon: 'favicon',
@@ -86,7 +87,8 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
               private attributeService: AttributeService,
               @Inject(WINDOW) private window: Window,
               public breakpointObserver: BreakpointObserver,
-              private menuService: MenuService) {
+              private menuService: MenuService,
+              private sanitizer:DomSanitizer) {
     super(store);
   }
   
@@ -121,7 +123,7 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
           const faviconTag = document.getElementById('favicon')
           if (favicon && faviconTag) {
             faviconTag.setAttribute('href', favicon);
-            this.favicon = favicon
+            this.favicon = this.sanitizer.bypassSecurityTrustUrl(favicon)
           }
           
           const primaryPalette = attrs.find(e => e.key === this.whiteLabelingKeys.primaryPalette)?.value
