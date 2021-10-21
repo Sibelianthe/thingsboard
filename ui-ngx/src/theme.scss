@@ -25,22 +25,13 @@ $tb-dark-primary-color: #9fa8da;
 $tb-primary: mat-palette($sib-primary);
 $tb-accent: mat-palette($sib-accent);
 
-$background: (background: map_get($mat-grey, 200));
-
-$tb-theme-background: map_merge($mat-light-theme-background, $background);
-
 $tb-mat-theme: mat-light-theme(
     $tb-primary,
     $tb-accent,
-    $sib-warn
 );
-
-$tb-theme: map_merge($tb-mat-theme, (background: $tb-theme-background));
 
 $primary: mat-color($tb-primary);
 $accent: mat-color($tb-accent);
-$warn: mat-color(mat-palette($sib-warn));
-
 
 @mixin mat-fab-toolbar-theme($theme) {
   $primary: map-get($theme, primary);
@@ -80,14 +71,16 @@ $warn: mat-color(mat-palette($sib-warn));
       background-color: mat-color($primary, 'A100');
     }
   }
-
-  @include mat-fab-toolbar-theme($tb-theme);
+  @include mat-fab-toolbar-theme($tb-mat-theme);
+  .tb-widget {
+    border-radius: var(--widget-border-radius);
+  }
 }
 
 .tb-default {
-  @include angular-material-theme($tb-theme);
+  @include angular-material-theme($tb-mat-theme);
   // @include mat-datetimepicker-theme($tb-dark-theme);
-  @include tb-components-theme($tb-theme);
+  @include tb-components-theme($tb-mat-theme);
 }
 
 // .sibelianthe-theme {

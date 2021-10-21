@@ -7,7 +7,7 @@
   --prim-200: #9fa8da;
   --prim-300: #7986cb;
   --prim-400: #5c6bc0;
-  --prim-500: #305680;
+  --prim-500: #eeeeee;
   --prim-600: #527dad;
   --prim-700: #303f9f;
   --prim-800: #283593;
@@ -23,7 +23,7 @@
   --acc-200: #ffab91;
   --acc-300: #ff8a65;
   --acc-400: #ff7043;
-  --acc-500: #f44336;
+  --acc-500: #d8055b;
   --acc-600: #ff5722;
   --acc-700: #e64a19;
   --acc-800: #d84315;
@@ -32,22 +32,6 @@
   --acc-A200: #ff6e40;
   --acc-A400: #ff3d00;
   --acc-A700: #dd2c00;
-
-  // Default warn: $mat-red
-  --warn-50: #ffebee;
-  --warn-100: #ffcdd2;
-  --warn-200: #ef9a9a;
-  --warn-300: #e57373;
-  --warn-400: #ef5350;
-  --warn-500: #f44336;
-  --warn-600: #e53935;
-  --warn-700: #d32f2f;
-  --warn-800: #c62828;
-  --warn-900: #b71c1c;
-  --warn-A100: #ff8a80;
-  --warn-A200: #ff5252;
-  --warn-A400: #ff1744;
-  --warn-A700: #d50000;
 
   // Text (Contrast) colors
   --dark-text: rgba(black, 0.87);
@@ -58,7 +42,7 @@
   --prim-200-text: rgba(black, 0.87);
   --prim-300-text: white;
   --prim-400-text: white;
-  --prim-500-text: white;
+  --prim-500-text: #0e0055;
   --prim-600-text: white;
   --prim-700-text: white;
   --prim-800-text: white;
@@ -83,20 +67,7 @@
   --acc-A400-text: white;
   --acc-A700-text: white;
 
-  --warn-50-text: rgba(black, 0.87);
-  --warn-100-text: rgba(black, 0.87);
-  --warn-200-text: rgba(black, 0.87);
-  --warn-300-text: white;
-  --warn-400-text: white;
-  --warn-500-text: white;
-  --warn-600-text: white;
-  --warn-700-text: white;
-  --warn-800-text: white;
-  --warn-900-text: white;
-  --warn-A100-text: rgba(black, 0.87);
-  --warn-A200-text: white;
-  --warn-A400-text: white;
-  --warn-A700-text: white;
+  --widget-border-radius: 10px;
 }
 
 $prim-50:   var(--prim-50);
@@ -129,21 +100,6 @@ $acc-A200: var(--acc-A200);
 $acc-A400: var(--acc-A400);
 $acc-A700: var(--acc-A700);
 
-$warn-50:   var(--warn-50);
-$warn-100:  var(--warn-100);
-$warn-200:  var(--warn-200);
-$warn-300:  var(--warn-300);
-$warn-400:  var(--warn-400);
-$warn-500:  var(--warn-500);
-$warn-600:  var(--warn-600);
-$warn-700:  var(--warn-700);
-$warn-800:  var(--warn-800);
-$warn-900:  var(--warn-900);
-$warn-A100: var(--warn-A100);
-$warn-A200: var(--warn-A200);
-$warn-A400: var(--warn-A400);
-$warn-A700: var(--warn-A700);
-
 $prim-50-text: var(--prim-50-text);
 $prim-100-text: var(--prim-100-text);
 $prim-200-text: var(--prim-200-text);
@@ -173,21 +129,6 @@ $acc-A100-text: var(--acc-A100-text);
 $acc-A200-text: var(--acc-A200-text);
 $acc-A400-text: var(--acc-A400-text);
 $acc-A700-text: var(--acc-A700-text);
-
-$warn-50-text: var(--warn-50-text);
-$warn-100-text: var(--warn-100-text);
-$warn-200-text: var(--warn-200-text);
-$warn-300-text: var(--warn-300-text);
-$warn-400-text: var(--warn-400-text);
-$warn-500-text: var(--warn-500-text);
-$warn-600-text: var(--warn-600-text);
-$warn-700-text: var(--warn-700-text);
-$warn-800-text: var(--warn-800-text);
-$warn-900-text: var(--warn-900-text);
-$warn-A100-text: var(--warn-A100-text);
-$warn-A200-text: var(--warn-A200-text);
-$warn-A400-text: var(--warn-A400-text);
-$warn-A700-text: var(--warn-A700-text);
 
 $sib-primary: (
   50:   $prim-50,
@@ -252,38 +193,5 @@ $sib-accent: (
     A200: $acc-A200-text,
     A400: $acc-A400-text,
     A700: $acc-A700-text,
-  )
-);
-
-$sib-warn: (
-  50:   $warn-50,
-  100:  $warn-100,
-  200:  $warn-200,
-  300:  $warn-300,
-  400:  $warn-400,
-  500:  $warn-500,
-  600:  $warn-600,
-  700:  $warn-700,
-  800:  $warn-800,
-  900:  $warn-900,
-  A100: $warn-A100,
-  A200: $warn-A200,
-  A400: $warn-A400,
-  A700: $warn-A700,
-  contrast: (
-    50:   $warn-50-text,
-    100:  $warn-100-text,
-    200:  $warn-200-text,
-    300:  $warn-300-text,
-    400:  $warn-400-text,
-    500:  $warn-500-text,
-    600:  $warn-600-text,
-    700:  $warn-700-text,
-    800:  $warn-800-text,
-    900:  $warn-900-text,
-    A100: $warn-A100-text,
-    A200: $warn-A200-text,
-    A400: $warn-A400-text,
-    A700: $warn-A700-text,
   )
 );

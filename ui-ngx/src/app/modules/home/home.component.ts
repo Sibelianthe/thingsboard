@@ -236,8 +236,8 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
   }
 
   private setPalette(palette, name) {
-    const darkTextColor = document.documentElement.style.getPropertyValue('--dark-text');
-    const lightTextColor = document.documentElement.style.getPropertyValue('--light-text');
+    const darkTextColor = getComputedStyle(document.documentElement).getPropertyValue('--dark-text');
+    const lightTextColor = getComputedStyle(document.documentElement).getPropertyValue('--light-text');
     for (let color of palette) {
       
       // Construct the variable name from palette name + color tint

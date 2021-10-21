@@ -23,7 +23,7 @@ import { Component } from '@angular/core';
 })
 export class LogoComponent {
 
-  logo = 'assets/logo_sibelianthe.svg';
+  logo = 'assets/LogoMySMartProcess.svg';
 
   gotoThingsboard(): void {
     window.open('https://sibelianthe.fr', '_blank');
