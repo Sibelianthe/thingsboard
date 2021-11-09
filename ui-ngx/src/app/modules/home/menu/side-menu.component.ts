@@ -17,6 +17,13 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { MenuService } from '@core/services/menu.service';
 import { MenuSection } from '@core/services/menu.models';
+import { AttributeService } from '@app/core/public-api';
+import { Observable } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { AppState } from '@core/core.state';
+import { AttributeScope, EntityType, PageComponent } from '@app/shared/public-api';
+import { EntityId } from '@shared/models/id/entity-id';
+import { selectAuthUser } from '@core/auth/auth.selectors';
 
 @Component({
   selector: 'tb-side-menu',
@@ -24,11 +31,13 @@ import { MenuSection } from '@core/services/menu.models';
   styleUrls: ['./side-menu.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class SideMenuComponent implements OnInit {
+export class SideMenuComponent extends PageComponent implements OnInit {
 
   menuSections$ = this.menuService.menuSections();
+  authUser$: Observable<any>;
 
-  constructor(private menuService: MenuService) {
+  constructor(protected store: Store<AppState>, private menuService: MenuService, private attributeService: AttributeService) {
+    super(store);
   }
 
   trackByMenuSection(index: number, section: MenuSection){
@@ -36,6 +45,30 @@ export class SideMenuComponent implements OnInit {
   }
 
   ngOnInit() {
+    const menuAttributeName = 'custom_menu'
+    this.authUser$ = this.store.pipe(select(selectAuthUser));
+    this.authUser$.subscribe(user => {
+      if (user && ['TENANT_ADMIN', 'CUSTOMER_USER'].includes(user.scopes[0])) {
+        let entity: EntityId = { entityType: EntityType.TENANT, id: ''};
+        if (user.scopes.includes('TENANT_ADMIN')) {
+          entity.id = user.tenantId;
+        } else if (user.scopes.includes('CUSTOMER_USER')) {
+          entity.entityType = EntityType.CUSTOMER;
+          entity.id = user.customerId;
+        }
+        this.attributeService.getEntityAttributes(entity, AttributeScope.SERVER_SCOPE, [menuAttributeName]).subscribe( attrs => {
+          const customMenuJson = attrs.find(e => e.key === menuAttributeName)?.value
+          try {
+            const menu = JSON.parse(customMenuJson)
+            this.menuService.updateMenuSection(menu)
+            this.menuService.updateHomeSection(menu)
+          } catch (err) {
+            console.error(err)
+          }
+        }, err => {
+          console.warn('Customer has no SERVER_SCOPE attributes', err);
+        });
+      }
+    })
   }
-
 }

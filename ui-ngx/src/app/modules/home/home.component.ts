@@ -93,14 +93,13 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
   }
   
   updateShowText() {
-    this.showText = !this.showText;
-    this.menuService.updateShowText(this.showText);
+    this.menuService.showText$.next(!this.showText)
   }
 
 
   ngOnInit() {
 
-    this.menuService.updateShowText(this.showText);
+    this.menuService.showText$.subscribe(showText => this.showText = showText)
     this.authUser$ = this.store.pipe(select(selectAuthUser));
     this.userDetails$ = this.store.pipe(select(selectUserDetails));
     this.userDetailsString = this.userDetails$.pipe(map((user: User) => {

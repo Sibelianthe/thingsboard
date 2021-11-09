@@ -28,12 +28,12 @@ export interface MenuSection extends HasUUID{
   height?: string;
   pages?: Array<MenuSection>;
   showText?: boolean;
+  showEntry?: boolean;
 }
 
 export interface HomeSection {
   name: string;
   places: Array<HomeSectionPlace>;
-  showText?: boolean;
 }
 
 export interface HomeSectionPlace {
@@ -41,5 +41,4 @@ export interface HomeSectionPlace {
   icon: string;
   isMdiIcon?: boolean;
   path: string;
-  showText?: boolean;
 }

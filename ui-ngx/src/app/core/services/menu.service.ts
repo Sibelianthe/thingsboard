@@ -15,7 +15,6 @@
 ///
 
 import { Injectable } from '@angular/core';
-import { AuthService } from '../auth/auth.service';
 import { select, Store } from '@ngrx/store';
 import { AppState } from '../core.state';
 import { selectAuth, selectIsAuthenticated } from '../auth/auth.selectors';
@@ -35,19 +34,31 @@ export class MenuService {
   homeSections$: Subject<Array<HomeSection>> = new BehaviorSubject<Array<HomeSection>>([]);
   showText$: Subject<boolean> = new BehaviorSubject<boolean>(true);
 
-  constructor(private store: Store<AppState>, private authService: AuthService) {
+  constructor(private store: Store<AppState>) {
     this.store.pipe(select(selectIsAuthenticated)).subscribe(
       (authenticated: boolean) => {
-        this.showText$.subscribe(showText => {
-          if (authenticated) {
-            this.buildMenu(showText);
-          }
-        });
+        if (authenticated) {
+          this.buildMenu();
+        }
       }
-    );
+      );
+    this.showText$.subscribe(showText => {
+      let menuSections: Array<MenuSection>;
+      this.menuSections$.subscribe(sections => menuSections = sections).unsubscribe();
+      menuSections.forEach(section => {
+        section.showText = showText;
+        section.id = guid()
+        if (section.type === 'toggle') {
+          section.pages.forEach(subsection => {
+            subsection.showText = showText;
+          })
+        }
+      })
+      this.menuSections$.next(menuSections);
+    });
   }
   
-  private buildMenu(showText: boolean) {
+  private buildMenu() {
     this.store.pipe(select(selectAuth), take(1)).subscribe(
       (authState: AuthState) => {
         if (authState.authUser) {
@@ -55,16 +66,16 @@ export class MenuService {
           let homeSections: Array<HomeSection>;
           switch (authState.authUser.authority) {
             case Authority.SYS_ADMIN:
-              menuSections = this.buildSysAdminMenu(authState, showText);
-              homeSections = this.buildSysAdminHome(authState, showText);
+              menuSections = this.buildSysAdminMenu();
+              homeSections = this.buildSysAdminHome();
               break;
             case Authority.TENANT_ADMIN:
-              menuSections = this.buildTenantAdminMenu(authState, showText);
-              homeSections = this.buildTenantAdminHome(authState, showText);
+              menuSections = this.buildTenantAdminMenu(authState);
+              homeSections = this.buildTenantAdminHome(authState);
               break;
             case Authority.CUSTOMER_USER:
-              menuSections = this.buildCustomerUserMenu(authState, showText);
-              homeSections = this.buildCustomerUserHome(authState, showText);
+              menuSections = this.buildCustomerUserMenu(authState);
+              homeSections = this.buildCustomerUserHome(authState);
               break;
           }
           this.menuSections$.next(menuSections);
@@ -74,7 +85,7 @@ export class MenuService {
     );
   }
 
-  private buildSysAdminMenu(authState: AuthState, showText): Array<MenuSection> {
+  private buildSysAdminMenu(): Array<MenuSection> {
     const sections: Array<MenuSection> = [];
     sections.push(
       {
@@ -83,7 +94,7 @@ export class MenuService {
         type: 'link',
         path: '/home',
         icon: 'home',
-        showText,
+        showText: true,
       },
       {
         id: guid(),
@@ -91,7 +102,7 @@ export class MenuService {
         type: 'link',
         path: '/tenants',
         icon: 'supervisor_account',
-        showText,
+        showText: true,
       },
       {
         id: guid(),
@@ -100,7 +111,7 @@ export class MenuService {
         path: '/tenantProfiles',
         icon: 'mdi:alpha-t-box',
         isMdiIcon: true,
-        showText,
+        showText: true,
       },
       {
         id: guid(),
@@ -108,7 +119,7 @@ export class MenuService {
         type: 'link',
         path: '/widgets-bundles',
         icon: 'now_widgets',
-        showText,
+        showText: true,
       },
       {
         id: guid(),
@@ -117,7 +128,7 @@ export class MenuService {
         path: '/settings',
         height: '240px',
         icon: 'settings',
-        showText,
+        showText: true,
         pages: [
           {
             id: guid(),
@@ -125,7 +136,7 @@ export class MenuService {
             type: 'link',
             path: '/settings/general',
             icon: 'settings_applications',
-            showText,
+            showText: true,
           },
           {
             id: guid(),
@@ -133,7 +144,7 @@ export class MenuService {
             type: 'link',
             path: '/settings/outgoing-mail',
             icon: 'mail',
-            showText,
+            showText: true,
           },
           {
             id: guid(),
@@ -141,7 +152,7 @@ export class MenuService {
             type: 'link',
             path: '/settings/sms-provider',
             icon: 'sms',
-            showText,
+            showText: true,
           },
           {
             id: guid(),
@@ -149,7 +160,7 @@ export class MenuService {
             type: 'link',
             path: '/settings/security-settings',
             icon: 'security',
-            showText,
+            showText: true,
           },
           {
             id: guid(),
@@ -157,7 +168,7 @@ export class MenuService {
             type: 'link',
             path: '/settings/oauth2',
             icon: 'security',
-            showText,
+            showText: true,
           },
           {
             id: guid(),
@@ -165,7 +176,7 @@ export class MenuService {
             type: 'link',
             path: '/settings/resources-library',
             icon: 'folder',
-            showText,
+            showText: true,
           }
         ]
       }
@@ -173,7 +184,7 @@ export class MenuService {
     return sections;
   }
 
-  private buildSysAdminHome(authState: AuthState, showText): Array<HomeSection> {
+  private buildSysAdminHome(): Array<HomeSection> {
     const homeSections: Array<HomeSection> = [];
     homeSections.push(
       {
@@ -191,7 +202,6 @@ export class MenuService {
             path: '/tenantProfiles'
           },
         ],
-        showText,
       },
       {
         name: 'widget.management',
@@ -202,47 +212,39 @@ export class MenuService {
             path: '/widgets-bundles'
           }
         ],
-        showText,
       },
       {
         name: 'admin.system-settings',
-        showText,
         places: [
           {
             name: 'admin.general',
             icon: 'settings_applications',
             path: '/settings/general',
-            showText,
           },
           {
             name: 'admin.outgoing-mail',
             icon: 'mail',
             path: '/settings/outgoing-mail',
-            showText,
           },
           {
             name: 'admin.sms-provider',
             icon: 'sms',
             path: '/settings/sms-provider',
-            showText,
           },
           {
             name: 'admin.security-settings',
             icon: 'security',
             path: '/settings/security-settings',
-            showText,
           },
           {
             name: 'admin.oauth2.oauth2',
             icon: 'security',
             path: '/settings/oauth2',
-            showText,
           },
           {
             name: 'resource.resources-library',
             icon: 'folder',
             path: '/settings/resources-library',
-            showText,
           }
         ]
       }
@@ -250,8 +252,10 @@ export class MenuService {
     return homeSections;
   }
 
-  private buildTenantAdminMenu(authState: AuthState, showText): Array<MenuSection> {
+  private buildTenantAdminMenu(authState: AuthState, getAll: boolean = false): Array<MenuSection> {
     const sections: Array<MenuSection> = [];
+    let showText: boolean;
+    this.showText$.subscribe(show => showText = show);
     sections.push(
       {
         id: guid(),
@@ -320,7 +324,7 @@ export class MenuService {
         showText,
       }
     );
-    if (authState.edgesSupportEnabled) {
+    if (getAll || authState.edgesSupportEnabled) {
       sections.push(
         {
           id: guid(),
@@ -416,18 +420,16 @@ export class MenuService {
     return sections;
   }
 
-  private buildTenantAdminHome(authState: AuthState, showText): Array<HomeSection> {
+  private buildTenantAdminHome(authState: AuthState): Array<HomeSection> {
     const homeSections: Array<HomeSection> = [];
     homeSections.push(
       {
         name: 'rulechain.management',
-        showText,
         places: [
           {
             name: 'rulechain.rulechains',
             icon: 'settings_ethernet',
             path: '/ruleChains',
-            showText,
           }
         ]
       },
@@ -438,56 +440,47 @@ export class MenuService {
             name: 'customer.customers',
             icon: 'supervisor_account',
             path: '/customers',
-            showText,
           }
         ]
       },
       {
         name: 'asset.management',
-        showText,
         places: [
           {
             name: 'asset.assets',
             icon: 'domain',
             path: '/assets',
-            showText,
           }
         ]
       },
       {
         name: 'device.management',
-        showText,
         places: [
           {
             name: 'device.devices',
             icon: 'devices_other',
             path: '/devices',
-            showText,
           },
           {
             name: 'device-profile.device-profiles',
             icon: 'mdi:alpha-d-box',
             isMdiIcon: true,
             path: '/deviceProfiles',
-            showText,
           },
           {
             name: 'ota-update.ota-updates',
             icon: 'memory',
             path: '/otaUpdates',
-            showText,
           }
         ]
       },
       {
         name: 'entity-view.management',
-        showText,
         places: [
           {
             name: 'entity-view.entity-views',
             icon: 'view_quilt',
             path: '/entityViews',
-            showText,
           }
         ]
       }
@@ -514,55 +507,46 @@ export class MenuService {
     homeSections.push(
       {
         name: 'dashboard.management',
-        showText,
         places: [
           {
             name: 'widget.widget-library',
             icon: 'now_widgets',
             path: '/widgets-bundles',
-            showText,
           },
           {
             name: 'dashboard.dashboards',
             icon: 'dashboard',
             path: '/dashboards',
-            showText,
           }
         ]
       },
       {
         name: 'audit-log.audit',
-        showText,
         places: [
           {
             name: 'audit-log.audit-logs',
             icon: 'track_changes',
             path: '/auditLogs',
-            showText,
           },
           {
             name: 'api-usage.api-usage',
             icon: 'insert_chart',
             path: '/usage',
-            showText,
           }
         ]
       },
       {
         name: 'admin.system-settings',
-        showText,
         places: [
           {
             name: 'admin.home-settings',
             icon: 'settings_applications',
             path: '/settings/home',
-            showText,
           },
           {
             name: 'resource.resources-library',
             icon: 'folder',
             path: '/settings/resources-library',
-            showText,
           }
         ]
       }
@@ -570,7 +554,7 @@ export class MenuService {
     return homeSections;
   }
 
-  private buildCustomerUserMenu(authState: AuthState, showText): Array<MenuSection> {
+  private buildCustomerUserMenu(authState: AuthState, getAll: boolean = false): Array<MenuSection> {
     const sections: Array<MenuSection> = [];
     sections.push(
       {
@@ -580,7 +564,7 @@ export class MenuService {
         path: '/home',
         notExact: true,
         icon: 'home',
-        showText,
+        showText: true,
       },
       {
         id: guid(),
@@ -588,7 +572,7 @@ export class MenuService {
         type: 'link',
         path: '/assets',
         icon: 'domain',
-        showText,
+        showText: true,
       },
       {
         id: guid(),
@@ -596,7 +580,7 @@ export class MenuService {
         type: 'link',
         path: '/devices',
         icon: 'devices_other',
-        showText,
+        showText: true,
       },
       {
         id: guid(),
@@ -604,10 +588,10 @@ export class MenuService {
         type: 'link',
         path: '/entityViews',
         icon: 'view_quilt',
-        showText,
+        showText: true,
       }
     );
-    if (authState.edgesSupportEnabled) {
+    if (getAll || authState.edgesSupportEnabled) {
       sections.push(
         {
           id: guid(),
@@ -615,7 +599,7 @@ export class MenuService {
           type: 'link',
           path: '/edgeInstances',
           icon: 'router',
-          showText,
+          showText: true,
         }
       );
     }
@@ -626,48 +610,42 @@ export class MenuService {
         type: 'link',
         path: '/dashboards',
         icon: 'dashboard',
-        showText,
+        showText: true,
       }
     );
     return sections;
   }
 
-  private buildCustomerUserHome(authState: AuthState, showText): Array<HomeSection> {
+  private buildCustomerUserHome(authState: AuthState): Array<HomeSection> {
     const homeSections: Array<HomeSection> = [];
     homeSections.push(
       {
         name: 'asset.view-assets',
-        showText,
         places: [
           {
             name: 'asset.assets',
             icon: 'domain',
             path: '/assets',
-            showText,
           }
         ]
       },
       {
         name: 'device.view-devices',
-        showText,
         places: [
           {
             name: 'device.devices',
             icon: 'devices_other',
             path: '/devices',
-            showText,
           }
         ]
       },
       {
         name: 'entity-view.management',
-        showText,
         places: [
           {
             name: 'entity-view.entity-views',
             icon: 'view_quilt',
             path: '/entityViews',
-            showText,
           }
         ]
       }
@@ -676,13 +654,11 @@ export class MenuService {
       homeSections.push(
         {
           name: 'edge.management',
-          showText,
           places: [
             {
               name: 'edge.edge-instances',
               icon: 'settings_input_antenna',
               path: '/edgeInstances',
-              showText,
             }
           ]
         }
@@ -691,13 +667,11 @@ export class MenuService {
     homeSections.push(
       {
         name: 'dashboard.view-dashboards',
-        showText,
         places: [
           {
             name: 'dashboard.dashboards',
             icon: 'dashboard',
             path: '/dashboards',
-            showText,
           }
         ]
       }
@@ -713,9 +687,82 @@ export class MenuService {
     return this.homeSections$;
   }
 
-  public updateShowText(showText: boolean) {
-    this.showText$.next(showText);
+  public updateMenuSection(menu) {
+    let menuSections: Array<MenuSection>;
+    this.menuSections$.subscribe(sections => menuSections = sections).unsubscribe();
+    menu.forEach((menuEntry) => {
+      const idx = menuSections.findIndex(e => e.path === menuEntry.path)
+      if (idx >= 0) {
+        menuSections[idx] = { ...menuSections[idx], id: guid(), ...menuEntry }
+        if (menuEntry.showEntry === false) {
+          menuSections.splice(idx, 1)
+        }
+      } else if (menuEntry.path.split('/').length > 2) {
+        // FIXME: sections are built correctly, but menu doesn't get hidden .. why ?
+        // Didn't find it in top level links, let's look for it in pages:
+        // Down only one level (else we'd need to do this recursively)
+        const parentPath = '/' + menuEntry.path.split('/')[1] // Get /settings for example
+        const toggleSectionIndex = menuSections.findIndex(e => e.path === parentPath)
+        if (toggleSectionIndex >= 0) {
+          const pageIndex = menuSections[toggleSectionIndex].pages.findIndex(e => e.path === menuEntry.path)
+          if (pageIndex >= 0) {
+            menuSections[toggleSectionIndex].pages[pageIndex] = { ...menuSections[toggleSectionIndex].pages[pageIndex], id: guid(), ...menuEntry }
+            if (menuEntry.showEntry === false) {
+              menuSections[toggleSectionIndex].pages.splice(pageIndex, 1)
+              if (menuSections[toggleSectionIndex].pages.length === 0) {
+                menuSections.splice(toggleSectionIndex, 1)
+              }
+            }
+          }
+        }
+
+      }
+    })
+    this.menuSections$.next(menuSections)
   }
 
+  public updateHomeSection(menu) {
+    let homeSections: Array<HomeSection>;
+    this.homeSections$.subscribe(sections => homeSections = sections).unsubscribe();
+    menu.forEach(newEntry => {
+      homeSections.forEach((section, sectionIndex) => {
+        const idx = section.places.findIndex(place => place.path === newEntry.path)
+        if (idx >= 0) {
+          section.places[idx] = { ...section.places[idx], ...newEntry }
+          if (newEntry.showEntry === false) {
+            section.places.splice(idx, 1)
+            if (section.places.length === 0) {
+              homeSections.splice(sectionIndex, 1)
+            }
+          }
+        }
+      })
+    })
+    this.homeSections$.next(homeSections)
+  }
+
+  public getMenus() {
+    const sanitizeMenu = sections => {
+      sections.forEach(section => {
+        if (section.type === 'toggle') {
+          sanitizeMenu(section.pages);
+          section.pages.forEach(page => {
+            sections.push(page);
+          });
+          delete section.pages;
+        }
+        delete section.id;
+        delete section.showText;
+        delete section.height;
+        delete section.type;
+        section.showEntry = true;
+      })
+    }
+    const tenantAdmin = this.buildTenantAdminMenu(null, true);
+    const customer = this.buildCustomerUserMenu(null, true);
+    sanitizeMenu(tenantAdmin);
+    sanitizeMenu(customer);
+    return {tenantAdmin, customer}
+  }
 }
 
