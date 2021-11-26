@@ -45,30 +45,45 @@ export class SideMenuComponent extends PageComponent implements OnInit {
   }
 
   ngOnInit() {
-    const menuAttributeName = 'custom_menu'
     this.authUser$ = this.store.pipe(select(selectAuthUser));
-    this.authUser$.subscribe(user => {
+    this.authUser$.subscribe(async user => {
       if (user && ['TENANT_ADMIN', 'CUSTOMER_USER'].includes(user.scopes[0])) {
-        let entity: EntityId = { entityType: EntityType.TENANT, id: ''};
-        if (user.scopes.includes('TENANT_ADMIN')) {
-          entity.id = user.tenantId;
-        } else if (user.scopes.includes('CUSTOMER_USER')) {
+        let entity: EntityId = { id: user.tenantId, entityType: EntityType.TENANT };
+        if (user.scopes.includes('CUSTOMER_USER')) {
           entity.entityType = EntityType.CUSTOMER;
           entity.id = user.customerId;
         }
-        this.attributeService.getEntityAttributes(entity, AttributeScope.SERVER_SCOPE, [menuAttributeName]).subscribe( attrs => {
-          const customMenuJson = attrs.find(e => e.key === menuAttributeName)?.value
+        // try to set global custom menu depending on user type
+        await this.getCustomMenu(entity);
+
+        // try to set particular user's custom menu
+        // could be optimzed to run first and only then see if user has global settings ...
+        // by piping subscriptions ??
+        entity.entityType = EntityType.USER;
+        entity.id = user.userId;
+        await this.getCustomMenu(entity);
+      }
+    })
+  }
+
+  async getCustomMenu(entity, menuAttributeName = 'custom_menu') {
+      return this.attributeService.getEntityAttributes(entity, AttributeScope.SERVER_SCOPE, [menuAttributeName]).subscribe( attrs => {
+        const customMenuJson = attrs.find(e => e.key === menuAttributeName)?.value
+        if (customMenuJson) {
           try {
             const menu = JSON.parse(customMenuJson)
             this.menuService.updateMenuSection(menu)
             this.menuService.updateHomeSection(menu)
+            return Promise.resolve(true);
           } catch (err) {
             console.error(err)
+            return Promise.resolve(false);
           }
-        }, err => {
-          console.warn('Customer has no SERVER_SCOPE attributes', err);
-        });
-      }
-    })
+        }
+        return Promise.resolve(false);
+      }, err => {
+        console.warn('Customer has no SERVER_SCOPE attributes', err);
+        return Promise.resolve(false);
+      })
   }
 }
