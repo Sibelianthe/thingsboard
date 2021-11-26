@@ -20,8 +20,8 @@
                [disableClose]="sidenavOpened"
                (click)="sidenavClicked()"
                [mode]="sidenavMode"
-               [opened]="sidenavOpened && !forceFullscreen"
-               [style.width]="showText ? '250px' : '80px'">
+               [opened]="!forceFullscreen"
+               [style.width]="sidenavOpened && !showText ? '80px' : '250px'">
     <header class="tb-nav-header">
       <mat-toolbar color="primary" class="tb-nav-header-toolbar">
         <div fxFlex="auto" fxLayout="row">
@@ -33,13 +33,13 @@
     <mat-toolbar color="primary" fxFlex="0%" class="tb-side-menu-toolbar" fxLayout="column" role="navigation" fxLayoutAlign="space-between">
       <tb-side-menu></tb-side-menu>
       <div flex fxLayoutAlign="center center" style="margin-bottom: .5em;">
-        <button mat-icon-button (click)="updateShowText()">
+        <button *ngIf="sidenavOpened" mat-icon-button (click)="updateShowText()">
           <mat-icon class="material-icons">{{ showText? 'arrow_back' : 'arrow_forward' }}</mat-icon>
         </button>
       </div>
     </mat-toolbar>
   </mat-sidenav>
-  <mat-sidenav-content [style.marginLeft]="showText ? '250px' : '80px'">
+  <mat-sidenav-content [style.marginLeft]="!sidenavOpened ? 'unset' : showText ? '250px' : '80px'">
     <div fxLayout="column" role="main" style="height: 100%;">
       <mat-toolbar fxLayout="row" color="primary" class="mat-elevation-z1 tb-primary-toolbar">
         <button [fxShow]="!forceFullscreen" mat-icon-button id="main"
