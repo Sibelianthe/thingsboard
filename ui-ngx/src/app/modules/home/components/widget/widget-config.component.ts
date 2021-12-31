@@ -395,7 +395,7 @@ export class WidgetConfigComponent extends PageComponent implements OnInit, Cont
             title: config.title,
             showTitleIcon: isDefined(config.showTitleIcon) ? config.showTitleIcon : false,
             titleIcon: isDefined(config.titleIcon) ? config.titleIcon : '',
-            iconColor: isDefined(config.iconColor) ? config.iconColor : 'rgba(0, 0, 0, 0.87)',
+            iconColor: isDefined(config.iconColor) ? config.iconColor : 'var(--dark-text)',
             iconSize: isDefined(config.iconSize) ? config.iconSize : '24px',
             titleTooltip: isDefined(config.titleTooltip) ? config.titleTooltip : '',
             showTitle: isDefined(config.showTitle) ? config.showTitle : false,

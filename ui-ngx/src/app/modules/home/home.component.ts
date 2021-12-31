@@ -64,6 +64,8 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
     primaryPalette: 'prim',
     accentPalette: 'acc',
     warnPalette: 'warn',
+    darkText: 'darkText',
+    lightText: 'lightText',
   };
 
   @ViewChild('sidenav')
@@ -125,6 +127,12 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
             this.favicon = this.sanitizer.bypassSecurityTrustUrl(favicon)
           }
           
+          const darkTextColor = attrs.find(e => e.key === this.whiteLabelingKeys.darkText)?.value
+          if (darkTextColor) document.documentElement.style.setProperty('--dark-text', darkTextColor);
+
+          const lightTextColor = attrs.find(e => e.key === this.whiteLabelingKeys.lightText)?.value
+          if (lightTextColor) document.documentElement.style.setProperty('--light-text', lightTextColor);
+
           const primaryPalette = attrs.find(e => e.key === this.whiteLabelingKeys.primaryPalette)?.value
           if (primaryPalette) this.setPalette(JSON.parse(primaryPalette), 'prim');
           
