@@ -24,6 +24,7 @@ import { Router } from '@angular/router';
 import { DialogComponent } from '@app/shared/components/dialog.component';
 import { DashboardState } from '@app/shared/models/dashboard.models';
 import { DashboardUtilsService } from '@core/services/dashboard-utils.service';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface SelectTargetStateDialogData {
   states: {[id: string]: DashboardState };
@@ -44,12 +45,15 @@ export class SelectTargetStateDialogComponent extends
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: SelectTargetStateDialogData,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<SelectTargetStateDialogComponent, string>,
               private fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
               private dashboardUtils: DashboardUtilsService) {
     super(store, router, dialogRef);
 
@@ -63,6 +67,7 @@ export class SelectTargetStateDialogComponent extends
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="stateFormGroup" (ngSubmit)="save()">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2 translate>dashboard.select-state</h2>
     <span fxFlex></span>
     <button mat-icon-button

@@ -22,6 +22,7 @@ import { Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface JsonObjectEditDialogData {
   jsonValue: object;
@@ -40,12 +41,16 @@ export class JsonObjectEditDialogComponent extends DialogComponent<JsonObjectEdi
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: JsonObjectEditDialogData,
               public dialogRef: MatDialogRef<JsonObjectEditDialogComponent, object>,
               public fb: FormBuilder,
-              private translate: TranslateService) {
+              private translate: TranslateService,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
   }
 
@@ -54,6 +59,7 @@ export class JsonObjectEditDialogComponent extends DialogComponent<JsonObjectEdi
     this.jsonFormGroup = this.fb.group({
       json: [this.data.jsonValue, []]
     });
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   cancel(): void {

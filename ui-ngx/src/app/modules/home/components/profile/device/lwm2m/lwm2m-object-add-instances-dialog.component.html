@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="instancesFormGroup" (ngSubmit)="add()" style="min-width: 400px;">
-  <mat-toolbar fxLayout="row" color="primary">
+  <mat-toolbar fxLayout="row" [color]="color">
     <span style="font-weight: 500">{{data.objectName}}</span>&nbsp;#{{data.objectId}}
     <span fxFlex></span>
     <button mat-button mat-icon-button

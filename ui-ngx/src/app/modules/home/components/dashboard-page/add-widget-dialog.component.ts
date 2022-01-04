@@ -27,6 +27,7 @@ import { Dashboard } from '@app/shared/models/dashboard.models';
 import { IAliasController } from '@core/api/widget-api.models';
 import { WidgetConfigComponentData, WidgetInfo } from '@home/models/widget-component.models';
 import { isDefined, isString } from '@core/utils';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface AddWidgetDialogData {
   dashboard: Dashboard;
@@ -52,11 +53,14 @@ export class AddWidgetDialogComponent extends DialogComponent<AddWidgetDialogCom
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: AddWidgetDialogData,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<AddWidgetDialogComponent, Widget>,
+              private globalVarsService: GlobalVarsService,
               private fb: FormBuilder) {
     super(store, router, dialogRef);
 
@@ -101,6 +105,7 @@ export class AddWidgetDialogComponent extends DialogComponent<AddWidgetDialogCom
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

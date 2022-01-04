@@ -28,6 +28,7 @@ import { DashboardSettings, GridSettings, StateControllerId } from '@app/shared/
 import { isDefined, isUndefined } from '@core/utils';
 import { DashboardUtilsService } from '@core/services/dashboard-utils.service';
 import { StatesControllerService } from './states/states-controller.service';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface DashboardSettingsDialogData {
   settings?: DashboardSettings;
@@ -53,6 +54,8 @@ export class DashboardSettingsDialogComponent extends DialogComponent<DashboardS
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: DashboardSettingsDialogData,
@@ -62,6 +65,7 @@ export class DashboardSettingsDialogComponent extends DialogComponent<DashboardS
               private utils: UtilsService,
               private dashboardUtils: DashboardUtilsService,
               private translate: TranslateService,
+              private globalVarsService: GlobalVarsService,
               private statesControllerService: StatesControllerService) {
     super(store, router, dialogRef);
 
@@ -178,6 +182,7 @@ export class DashboardSettingsDialogComponent extends DialogComponent<DashboardS
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

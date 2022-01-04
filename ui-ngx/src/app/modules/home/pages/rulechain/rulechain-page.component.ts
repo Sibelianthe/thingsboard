@@ -78,6 +78,7 @@ import { Hotkey } from 'angular2-hotkeys';
 import { EntityType } from '@shared/models/entity-type.models';
 import { DebugEventType, EventType } from '@shared/models/event.models';
 import Timeout = NodeJS.Timeout;
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 @Component({
   selector: 'tb-rulechain-page',
@@ -241,6 +242,8 @@ export class RuleChainPageComponent extends PageComponent
 
   private tooltipTimeout: Timeout;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               private route: ActivatedRoute,
               private router: Router,
@@ -250,7 +253,9 @@ export class RuleChainPageComponent extends PageComponent
               private itembuffer: ItemBufferService,
               public dialog: MatDialog,
               public dialogService: DialogService,
-              public fb: FormBuilder) {
+              public fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store);
 
     this.rxSubscription = this.route.data.subscribe(
@@ -262,6 +267,7 @@ export class RuleChainPageComponent extends PageComponent
   }
 
   ngOnInit() {
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   ngAfterViewInit() {
@@ -1471,12 +1477,16 @@ export class AddRuleNodeLinkDialogComponent extends DialogComponent<AddRuleNodeL
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: AddRuleNodeLinkDialogData,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<AddRuleNodeLinkDialogComponent, FcRuleEdge>,
-              private fb: FormBuilder) {
+              private fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
 
     this.link = this.data.link;
@@ -1490,6 +1500,7 @@ export class AddRuleNodeLinkDialogComponent extends DialogComponent<AddRuleNodeL
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -1533,11 +1544,14 @@ export class AddRuleNodeDialogComponent extends DialogComponent<AddRuleNodeDialo
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: AddRuleNodeDialogData,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
-              public dialogRef: MatDialogRef<AddRuleNodeDialogComponent, FcRuleNode>) {
+              public dialogRef: MatDialogRef<AddRuleNodeDialogComponent, FcRuleNode>,
+              private globalVarsService: GlobalVarsService) {
     super(store, router, dialogRef);
 
     this.ruleNode = this.data.ruleNode;
@@ -1546,6 +1560,7 @@ export class AddRuleNodeDialogComponent extends DialogComponent<AddRuleNodeDialo
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

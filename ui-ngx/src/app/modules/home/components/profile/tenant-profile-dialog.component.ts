@@ -33,6 +33,7 @@ import { Router } from '@angular/router';
 import { TenantProfile } from '@shared/models/tenant.model';
 import { TenantProfileComponent } from './tenant-profile.component';
 import { TenantProfileService } from '@core/http/tenant-profile.service';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface TenantProfileDialogData {
   tenantProfile: TenantProfile;
@@ -55,6 +56,8 @@ export class TenantProfileDialogComponent extends
 
   @ViewChild('tenantProfileComponent', {static: true}) tenantProfileComponent: TenantProfileComponent;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: TenantProfileDialogData,
@@ -62,10 +65,15 @@ export class TenantProfileDialogComponent extends
               private componentFactoryResolver: ComponentFactoryResolver,
               private injector: Injector,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
+              private globalVarsService: GlobalVarsService,
               private tenantProfileService: TenantProfileService) {
     super(store, router, dialogRef);
     this.isAdd = this.data.isAdd;
     this.tenantProfile = this.data.tenantProfile;
+  }
+
+  ngOnInit() {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   ngAfterViewInit(): void {

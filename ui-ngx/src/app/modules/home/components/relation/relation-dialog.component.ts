@@ -32,6 +32,7 @@ import { forkJoin, Observable } from 'rxjs';
 import { JsonObjectEditComponent } from '@shared/components/json-object-edit.component';
 import { Router } from '@angular/router';
 import { DialogComponent } from '@shared/components/dialog.component';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface RelationDialogData {
   isAdd: boolean;
@@ -59,13 +60,17 @@ export class RelationDialogComponent extends DialogComponent<RelationDialogCompo
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: RelationDialogData,
               private entityRelationService: EntityRelationService,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<RelationDialogComponent, boolean>,
-              public fb: FormBuilder) {
+              public fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
     this.isAdd = data.isAdd;
     this.direction = data.direction;
@@ -88,6 +93,7 @@ export class RelationDialogComponent extends DialogComponent<RelationDialogCompo
         this.submitted = false;
       }
     );
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

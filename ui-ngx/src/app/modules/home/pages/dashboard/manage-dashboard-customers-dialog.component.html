@@ -17,7 +17,7 @@
 -->
 <form style="width: 600px;"
       [formGroup]="dashboardCustomersFormGroup" (ngSubmit)="submit()">
-  <mat-toolbar fxLayout="row" color="primary">
+  <mat-toolbar fxLayout="row" [color]="color">
     <h2>{{ titleText | translate }}</h2>
     <span fxFlex></span>
     <button mat-button mat-icon-button

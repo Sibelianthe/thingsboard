@@ -84,6 +84,7 @@ import {
 } from '@home/components/attribute/add-widget-to-dashboard-dialog.component';
 import { deepClone } from '@core/utils';
 import { Filters } from '@shared/models/query/query.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 
 @Component({
@@ -171,6 +172,8 @@ export class AttributeTableComponent extends PageComponent implements AfterViewI
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               private attributeService: AttributeService,
               private telemetryWsService: TelemetryWebsocketService,
@@ -184,6 +187,7 @@ export class AttributeTableComponent extends PageComponent implements AfterViewI
               private dashboardUtils: DashboardUtilsService,
               private widgetService: WidgetService,
               private zone: NgZone,
+              private globalVarsService: GlobalVarsService,
               private cd: ChangeDetectorRef) {
     super(store);
     this.dirtyValue = !this.activeValue;
@@ -193,6 +197,7 @@ export class AttributeTableComponent extends PageComponent implements AfterViewI
   }
 
   ngOnInit() {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   attributeScopeChanged(attributeScope: TelemetryType) {

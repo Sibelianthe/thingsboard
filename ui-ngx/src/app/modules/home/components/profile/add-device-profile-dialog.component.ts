@@ -50,6 +50,7 @@ import { StepperSelectionEvent } from '@angular/cdk/stepper';
 import { deepTrim } from '@core/utils';
 import { ServiceType } from '@shared/models/queue.models';
 import { DashboardId } from '@shared/models/id/dashboard-id';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface AddDeviceProfileDialogData {
   deviceProfileName: string;
@@ -93,6 +94,8 @@ export class AddDeviceProfileDialogComponent extends
 
   serviceType = ServiceType.TB_RULE_ENGINE;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: AddDeviceProfileDialogData,
@@ -101,6 +104,7 @@ export class AddDeviceProfileDialogComponent extends
               private injector: Injector,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               private deviceProfileService: DeviceProfileService,
+              private globalVarsService: GlobalVarsService,
               private fb: FormBuilder) {
     super(store, router, dialogRef);
     this.deviceProfileDetailsFormGroup = this.fb.group(
@@ -138,6 +142,10 @@ export class AddDeviceProfileDialogComponent extends
         } as DeviceProvisionConfiguration, [Validators.required]]
       }
     );
+  }
+
+  ngOnInit() {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   private deviceProfileTransportTypeChanged() {

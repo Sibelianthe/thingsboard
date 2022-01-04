@@ -23,7 +23,7 @@
   --prim-200: #9fa8da;
   --prim-300: #7986cb;
   --prim-400: #5c6bc0;
-  --prim-500: #eeeeee;
+  --prim-500: #0e0055;
   --prim-600: #527dad;
   --prim-700: #303f9f;
   --prim-800: #283593;
@@ -61,7 +61,7 @@
   --prim-200-text: rgba(black, 0.87);
   --prim-300-text: white;
   --prim-400-text: white;
-  --prim-500-text: #0e0055;
+  --prim-500-text: #eee;
   --prim-600-text: white;
   --prim-700-text: white;
   --prim-800-text: white;
@@ -87,7 +87,12 @@
   --acc-A700-text: white;
 
   --widget-border-radius: 10px;
+
+  --warn-500: #eeeeee;
+  --warn-500-text: #0e0055;
 }
+$warn-500:   var(--warn-500);
+$warn-500-text:  var(--warn-500-text);
 
 $prim-50:   var(--prim-50);
 $prim-100:  var(--prim-100);
@@ -214,3 +219,9 @@ $sib-accent: (
     A700: $acc-A700-text,
   )
 );
+$sib-warn: (
+  500: $warn-500,
+  contrast: (
+    500: $warn-500-text,
+  )
+)

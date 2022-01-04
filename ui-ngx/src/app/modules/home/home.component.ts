@@ -36,6 +36,7 @@ import { EntityId } from '@shared/models/id/entity-id';
 import { EntityType } from '@app/shared/public-api';
 import { MenuService } from '@app/core/public-api';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 const screenfull = _screenfull as _screenfull.Screenfull;
 
@@ -82,6 +83,7 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
   searchEnabled = false;
   showSearch = false;
   searchText = '';
+  color = 'primary';
 
   showText = true;
 
@@ -90,6 +92,7 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
               @Inject(WINDOW) private window: Window,
               public breakpointObserver: BreakpointObserver,
               private menuService: MenuService,
+              private globalVarsService: GlobalVarsService,
               private sanitizer:DomSanitizer) {
     super(store);
   }
@@ -102,6 +105,7 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
   ngOnInit() {
 
     this.menuService.showText$.subscribe(showText => this.showText = showText)
+    this.globalVarsService.color$.subscribe(color => this.color = color)
     this.authUser$ = this.store.pipe(select(selectAuthUser));
     this.userDetails$ = this.store.pipe(select(selectUserDetails));
     this.userDetailsString = this.userDetails$.pipe(map((user: User) => {
@@ -141,6 +145,9 @@ export class HomeComponent extends PageComponent implements AfterViewInit, OnIni
           
           const warnPalette = attrs.find(e => e.key === this.whiteLabelingKeys.warnPalette)?.value
           if (warnPalette) this.setPalette(JSON.parse(warnPalette), 'warn');
+
+          const themeExists = primaryPalette || accentPalette || warnPalette;
+          this.globalVarsService.setColor(themeExists)
 
         }, err => {
           console.warn('Customer has no SERVER_SCOPE attributes', err);

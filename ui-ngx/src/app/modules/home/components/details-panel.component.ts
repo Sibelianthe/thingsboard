@@ -14,27 +14,33 @@
 /// limitations under the License.
 ///
 
-import { ChangeDetectorRef, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
-import { PageComponent } from '@shared/components/page.component';
-import { Store } from '@ngrx/store';
-import { AppState } from '@core/core.state';
-import { FormGroup } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+} from "@angular/core";
+import { PageComponent } from "@shared/components/page.component";
+import { Store } from "@ngrx/store";
+import { AppState } from "@core/core.state";
+import { FormGroup } from "@angular/forms";
+import { Subscription } from "rxjs";
 
 @Component({
-  selector: 'tb-details-panel',
-  templateUrl: './details-panel.component.html',
-  styleUrls: ['./details-panel.component.scss']
+  selector: "tb-details-panel",
+  templateUrl: "./details-panel.component.html",
+  styleUrls: ["./details-panel.component.scss"],
 })
 export class DetailsPanelComponent extends PageComponent implements OnDestroy {
-
   @Input() headerHeightPx = 100;
-  @Input() headerTitle = '';
-  @Input() headerSubtitle = '';
+  @Input() headerTitle = "";
+  @Input() headerSubtitle = "";
   @Input() isReadOnly = false;
   @Input() isAlwaysEdit = false;
   @Input() isShowSearch = false;
-  @Input() backgroundColor = '#FFF';
+  @Input() backgroundColor = "#FFF";
 
   private theFormValue: FormGroup;
   private formSubscription: Subscription = null;
@@ -48,7 +54,9 @@ export class DetailsPanelComponent extends PageComponent implements OnDestroy {
       }
       this.theFormValue = value;
       if (this.theFormValue !== null) {
-        this.formSubscription = this.theFormValue.valueChanges.subscribe(() => this.cd.detectChanges());
+        this.formSubscription = this.theFormValue.valueChanges.subscribe(() =>
+          this.cd.detectChanges()
+        );
       }
     }
   }
@@ -82,9 +90,12 @@ export class DetailsPanelComponent extends PageComponent implements OnDestroy {
     this.isEditChange.emit(this.isEditValue);
   }
 
+  color = "primary";
 
-  constructor(protected store: Store<AppState>,
-              private cd: ChangeDetectorRef) {
+  constructor(
+    protected store: Store<AppState>,
+    private cd: ChangeDetectorRef
+  ) {
     super(store);
   }
 

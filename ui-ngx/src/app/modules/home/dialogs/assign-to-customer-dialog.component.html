@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="assignToCustomerFormGroup" (ngSubmit)="assign()">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2>{{ assignToCustomerTitle | translate }}</h2>
     <span fxFlex></span>
     <button mat-button mat-icon-button

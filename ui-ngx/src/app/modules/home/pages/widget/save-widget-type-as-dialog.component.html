@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="saveWidgetTypeAsFormGroup" (ngSubmit)="saveAs()">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2 translate>widget.save-widget-type-as</h2>
     <span fxFlex></span>
     <button mat-button mat-icon-button

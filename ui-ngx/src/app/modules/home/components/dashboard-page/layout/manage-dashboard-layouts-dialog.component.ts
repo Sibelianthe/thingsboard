@@ -31,6 +31,7 @@ import {
   DashboardSettingsDialogComponent,
   DashboardSettingsDialogData
 } from '@home/components/dashboard-page/dashboard-settings-dialog.component';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface ManageDashboardLayoutsDialogData {
   layouts: DashboardStateLayouts;
@@ -51,6 +52,8 @@ export class ManageDashboardLayoutsDialogComponent extends DialogComponent<Manag
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: ManageDashboardLayoutsDialogData,
@@ -60,6 +63,7 @@ export class ManageDashboardLayoutsDialogComponent extends DialogComponent<Manag
               private utils: UtilsService,
               private dashboardUtils: DashboardUtilsService,
               private translate: TranslateService,
+              private globalVarsService: GlobalVarsService,
               private dialog: MatDialog) {
     super(store, router, dialogRef);
 
@@ -78,6 +82,7 @@ export class ManageDashboardLayoutsDialogComponent extends DialogComponent<Manag
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

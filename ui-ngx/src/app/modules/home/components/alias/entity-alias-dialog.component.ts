@@ -36,6 +36,7 @@ import { UtilsService } from '@core/services/utils.service';
 import { TranslateService } from '@ngx-translate/core';
 import { EntityService } from '@core/http/entity.service';
 import { Observable } from 'rxjs';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface EntityAliasDialogData {
   isAdd: boolean;
@@ -63,6 +64,8 @@ export class EntityAliasDialogComponent extends DialogComponent<EntityAliasDialo
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: EntityAliasDialogData,
@@ -71,6 +74,7 @@ export class EntityAliasDialogComponent extends DialogComponent<EntityAliasDialo
               private fb: FormBuilder,
               private utils: UtilsService,
               public translate: TranslateService,
+              private globalVarsService: GlobalVarsService,
               private entityService: EntityService) {
     super(store, router, dialogRef);
     this.isAdd = data.isAdd;
@@ -120,6 +124,7 @@ export class EntityAliasDialogComponent extends DialogComponent<EntityAliasDialo
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

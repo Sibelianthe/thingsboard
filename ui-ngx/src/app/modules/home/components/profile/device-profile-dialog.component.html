@@ -16,7 +16,7 @@
 
 -->
 <form (ngSubmit)="save()" style="width: 1000px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2>{{ (isAdd ? 'device-profile.add' : 'device-profile.edit' ) | translate }}</h2>
     <span fxFlex></span>
     <button mat-icon-button

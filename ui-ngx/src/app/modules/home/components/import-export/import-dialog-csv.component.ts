@@ -40,6 +40,7 @@ import { ImportExportService } from '@home/components/import-export/import-expor
 import { TableColumnsAssignmentComponent } from '@home/components/import-export/table-columns-assignment.component';
 import { Ace } from 'ace-builds';
 import { getAce } from '@shared/models/ace/ace.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface ImportDialogCsvData {
   entityType: EntityType;
@@ -95,6 +96,8 @@ export class ImportDialogCsvComponent extends DialogComponent<ImportDialogCsvCom
   private initEditorComponent = false;
   private parseData: CsvToJsonResult;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: ImportDialogCsvData,
@@ -102,6 +105,7 @@ export class ImportDialogCsvComponent extends DialogComponent<ImportDialogCsvCom
               public translate: TranslateService,
               private importExport: ImportExportService,
               private fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
               private renderer: Renderer2) {
     super(store, router, dialogRef);
     this.entityType = data.entityType;
@@ -121,6 +125,10 @@ export class ImportDialogCsvComponent extends DialogComponent<ImportDialogCsvCom
     this.columnTypesFormGroup = this.fb.group({
       columnsParam: [[], []]
     });
+  }
+
+  ngOnInit() {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   ngAfterViewInit() {

@@ -28,6 +28,7 @@ import {
   EntityKeyValueType,
   FilterPredicateType, KeyFilterPredicateInfo
 } from '@shared/models/query/query.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface ComplexFilterPredicateDialogData {
   complexPredicate: ComplexFilterPredicateInfo;
@@ -60,11 +61,14 @@ export class ComplexFilterPredicateDialogComponent extends
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: ComplexFilterPredicateDialogData,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<ComplexFilterPredicateDialogComponent, ComplexFilterPredicateInfo>,
+              private globalVarsService: GlobalVarsService,
               private fb: FormBuilder) {
     super(store, router, dialogRef);
 
@@ -82,6 +86,7 @@ export class ComplexFilterPredicateDialogComponent extends
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

@@ -28,6 +28,7 @@ import html2canvas from 'html2canvas';
 import { map, share } from 'rxjs/operators';
 import { BehaviorSubject, from } from 'rxjs';
 import { isNumber } from '@core/utils';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface DashboardImageDialogData {
   dashboardId: DashboardId;
@@ -59,12 +60,15 @@ export class DashboardImageDialogComponent extends DialogComponent<DashboardImag
   dashboardRectFormGroup: FormGroup;
   dashboardImageFormGroup: FormGroup;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: DashboardImageDialogData,
               public dialogRef: MatDialogRef<DashboardImageDialogComponent, DashboardImageDialogResult>,
               private dashboardService: DashboardService,
               private sanitizer: DomSanitizer,
+              private globalVarsService: GlobalVarsService,
               private fb: FormBuilder) {
     super(store, router, dialogRef);
 
@@ -89,6 +93,10 @@ export class DashboardImageDialogComponent extends DialogComponent<DashboardImag
         this.updateImage(newImage);
       }
     );
+  }
+
+  ngOnInit() {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   private convertUserPercent(percent: any, defaultValue: number): number {

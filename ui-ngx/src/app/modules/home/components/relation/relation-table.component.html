@@ -72,7 +72,7 @@
         </button>
       </div>
     </mat-toolbar>
-    <mat-toolbar class="mat-table-toolbar" color="primary" [fxShow]="!dataSource.selection.isEmpty()">
+    <mat-toolbar class="mat-table-toolbar" [color]="color" [fxShow]="!dataSource.selection.isEmpty()">
       <div class="mat-toolbar-tools" fxLayoutAlign="space-between center">
         <span class="tb-entity-table-info">
           {{ 'relation.selected-relations' | translate:{count: dataSource.selection.selected.length} }}

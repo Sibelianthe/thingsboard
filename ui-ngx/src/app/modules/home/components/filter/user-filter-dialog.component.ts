@@ -38,6 +38,7 @@ import {
   UserFilterInputInfo
 } from '@shared/models/query/query.models';
 import { isDefinedAndNotNull } from '@core/utils';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface UserFilterDialogData {
   filter: Filter;
@@ -60,12 +61,15 @@ export class UserFilterDialogComponent extends DialogComponent<UserFilterDialogC
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: UserFilterDialogData,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<UserFilterDialogComponent, Filter>,
               private fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
               public translate: TranslateService) {
     super(store, router, dialogRef);
     this.filter = data.filter;
@@ -102,6 +106,7 @@ export class UserFilterDialogComponent extends DialogComponent<UserFilterDialogC
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="addWidgetFormGroup" (ngSubmit)="add()" style="min-width: 400px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2 translate>attribute.add-widget-to-dashboard</h2>
     <span fxFlex></span>
     <button mat-button mat-icon-button

@@ -21,6 +21,7 @@ import { MediaBreakpoints } from '@shared/models/constants';
 import { HomeSection } from '@core/services/menu.models';
 import { ActivatedRoute } from '@angular/router';
 import { HomeDashboard } from '@shared/models/dashboard.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 @Component({
   selector: 'tb-home-links',
@@ -34,12 +35,16 @@ export class HomeLinksComponent implements OnInit {
 
   cols = 2;
 
+  color: string;j
+
   homeDashboard: HomeDashboard = this.route.snapshot.data.homeDashboard;
 
   constructor(private menuService: MenuService,
               public breakpointObserver: BreakpointObserver,
               private cd: ChangeDetectorRef,
+              private globalVarsService: GlobalVarsService,
               private route: ActivatedRoute) {
+    this.color = 'primary';
   }
 
   ngOnInit() {
@@ -49,6 +54,10 @@ export class HomeLinksComponent implements OnInit {
         .observe([MediaBreakpoints.lg, MediaBreakpoints['gt-lg']])
         .subscribe((state: BreakpointState) => this.updateColumnCount());
     }
+    this.globalVarsService.color$.subscribe(color => {
+      this.color = color
+      this.cd.detectChanges();
+    })
   }
 
   private updateColumnCount() {

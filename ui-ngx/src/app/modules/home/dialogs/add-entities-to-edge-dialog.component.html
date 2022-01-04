@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="addEntitiesToEdgeFormGroup" (ngSubmit)="assign()">
-  <mat-toolbar fxLayout="row" color="primary">
+  <mat-toolbar fxLayout="row" [color]="color">
     <h2>{{ assignToEdgeTitle | translate }}</h2>
     <span fxFlex></span>
     <button mat-button mat-icon-button

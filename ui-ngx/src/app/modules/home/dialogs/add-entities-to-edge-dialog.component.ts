@@ -31,6 +31,7 @@ import { DialogComponent } from '@shared/components/dialog.component';
 import { Router } from '@angular/router';
 import { RuleChainService } from '@core/http/rule-chain.service';
 import { RuleChainType } from '@shared/models/rule-chain.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface AddEntitiesToEdgeDialogData {
   edgeId: string;
@@ -56,6 +57,8 @@ export class AddEntitiesToEdgeDialogComponent extends
   assignToEdgeTitle: string;
   assignToEdgeText: string;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: AddEntitiesToEdgeDialogData,
@@ -67,7 +70,9 @@ export class AddEntitiesToEdgeDialogComponent extends
               private ruleChainService: RuleChainService,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<AddEntitiesToEdgeDialogComponent, boolean>,
-              public fb: FormBuilder) {
+              public fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
     this.entityType = this.data.entityType;
   }
@@ -100,6 +105,7 @@ export class AddEntitiesToEdgeDialogComponent extends
         this.assignToEdgeText = 'dashboard.assign-dashboard-to-edge-text';
         break;
     }
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

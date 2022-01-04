@@ -23,6 +23,7 @@ import { ActionNotificationShow } from '@core/notification/notification.actions'
 import { TranslateService } from '@ngx-translate/core';
 import { RuleChain } from '@shared/models/rule-chain.models';
 import { EntityTableConfig } from '@home/models/entity/entities-table-config.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 @Component({
   selector: 'tb-rulechain',
@@ -33,17 +34,21 @@ export class RuleChainComponent extends EntityComponent<RuleChain> {
 
   ruleChainScope: 'tenant' | 'edges' | 'edge';
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected translate: TranslateService,
               @Inject('entity') protected entityValue: RuleChain,
               @Inject('entitiesTableConfig') protected entitiesTableConfigValue: EntityTableConfig<RuleChain>,
               public fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
               protected cd: ChangeDetectorRef) {
     super(store, fb, entityValue, entitiesTableConfigValue, cd);
   }
 
   ngOnInit() {
     this.ruleChainScope = this.entitiesTableConfig.componentsData.ruleChainScope;
+    this.globalVarsService.color$.subscribe(color => this.color = color)
     super.ngOnInit();
   }
 

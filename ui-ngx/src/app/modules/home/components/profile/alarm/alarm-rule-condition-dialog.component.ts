@@ -27,6 +27,7 @@ import { keyFilterInfosToKeyFilters, keyFiltersToKeyFilterInfos } from '@shared/
 import { AlarmCondition, AlarmConditionType, AlarmConditionTypeTranslationMap } from '@shared/models/device.models';
 import { TimeUnit, timeUnitTranslationMap } from '@shared/models/time/time.models';
 import { EntityId } from '@shared/models/id/entity-id';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface AlarmRuleConditionDialogData {
   readonly: boolean;
@@ -56,12 +57,15 @@ export class AlarmRuleConditionDialogComponent extends DialogComponent<AlarmRule
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: AlarmRuleConditionDialogData,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<AlarmRuleConditionDialogComponent, AlarmCondition>,
               private fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
               public translate: TranslateService) {
     super(store, router, dialogRef);
 
@@ -85,6 +89,7 @@ export class AlarmRuleConditionDialogComponent extends DialogComponent<AlarmRule
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

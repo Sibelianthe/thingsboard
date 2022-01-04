@@ -49,6 +49,7 @@ import { MediaBreakpoints } from '@shared/models/constants';
 import { RuleChainId } from '@shared/models/id/rule-chain-id';
 import { ServiceType } from '@shared/models/queue.models';
 import { deepTrim } from '@core/utils';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 @Component({
   selector: 'tb-device-wizard',
@@ -94,6 +95,8 @@ export class DeviceWizardDialogComponent extends
   private subscriptions: Subscription[] = [];
   private currentDeviceProfileTransportType = DeviceTransportType.DEFAULT;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: AddEntityDialogData<BaseData<EntityId>>,
@@ -102,7 +105,9 @@ export class DeviceWizardDialogComponent extends
               private deviceProfileService: DeviceProfileService,
               private deviceService: DeviceService,
               private breakpointObserver: BreakpointObserver,
-              private fb: FormBuilder) {
+              private fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
     this.deviceWizardFormGroup = this.fb.group({
         name: ['', [Validators.required, Validators.maxLength(255)]],
@@ -198,6 +203,10 @@ export class DeviceWizardDialogComponent extends
           }
         }
       ));
+  }
+
+  ngOnInit() {
+      this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   ngOnDestroy() {

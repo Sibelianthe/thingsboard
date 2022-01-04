@@ -25,6 +25,7 @@ import { Router } from '@angular/router';
 import { DialogComponent } from '@app/shared/components/dialog.component';
 import { AttributeData, AttributeScope } from '@shared/models/telemetry/telemetry.models';
 import { AttributeService } from '@core/http/attribute.service';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface AddAttributeDialogData {
   entityId: EntityId;
@@ -44,17 +45,21 @@ export class AddAttributeDialogComponent extends DialogComponent<AddAttributeDia
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: AddAttributeDialogData,
               private attributeService: AttributeService,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<AddAttributeDialogComponent, boolean>,
+              private globalVarsService: GlobalVarsService,
               public fb: FormBuilder) {
     super(store, router, dialogRef);
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
     this.attributeFormGroup = this.fb.group({
       key: ['', [Validators.required, Validators.maxLength(255)]],
       value: [null, [Validators.required]]

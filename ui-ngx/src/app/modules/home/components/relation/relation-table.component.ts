@@ -38,6 +38,7 @@ import {
 import { EntityId } from '@shared/models/id/entity-id';
 import { RelationsDatasource } from '../../models/datasource/relation-datasource';
 import { RelationDialogComponent, RelationDialogData } from '@home/components/relation/relation-dialog.component';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 @Component({
   selector: 'tb-relation-table',
@@ -96,11 +97,15 @@ export class RelationTableComponent extends PageComponent implements AfterViewIn
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               private entityRelationService: EntityRelationService,
               public translate: TranslateService,
               public dialog: MatDialog,
-              private dialogService: DialogService) {
+              private dialogService: DialogService,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store);
     this.dirtyValue = !this.activeValue;
     const sortOrder: SortOrder = { property: 'type', direction: Direction.ASC };
@@ -111,6 +116,7 @@ export class RelationTableComponent extends PageComponent implements AfterViewIn
   }
 
   ngOnInit() {
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   updateColumns() {

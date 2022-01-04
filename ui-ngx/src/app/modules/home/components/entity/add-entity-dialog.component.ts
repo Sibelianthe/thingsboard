@@ -29,6 +29,7 @@ import { EntityTableConfig } from '@home/models/entity/entities-table-config.mod
 import { AddEntityDialogData } from '@home/models/entity/entity-component.models';
 import { DialogComponent } from '@shared/components/dialog.component';
 import { Router } from '@angular/router';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 @Component({
   selector: 'tb-add-entity-dialog',
@@ -51,18 +52,22 @@ export class AddEntityDialogComponent extends
 
   @ViewChild('entityDetailsForm', {static: true}) entityDetailsFormAnchor: TbAnchorComponent;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: AddEntityDialogData<BaseData<HasId>>,
               public dialogRef: MatDialogRef<AddEntityDialogComponent, BaseData<HasId>>,
               private componentFactoryResolver: ComponentFactoryResolver,
               private injector: Injector,
+              private globalVarsService: GlobalVarsService,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher) {
     super(store, router, dialogRef);
   }
 
   ngOnInit(): void {
     this.entitiesTableConfig = this.data.entitiesTableConfig;
+    this.globalVarsService.color$.subscribe(color => this.color = color)
     this.translations = this.entitiesTableConfig.entityTranslations;
     this.resources = this.entitiesTableConfig.entityResources;
     this.entity = {};

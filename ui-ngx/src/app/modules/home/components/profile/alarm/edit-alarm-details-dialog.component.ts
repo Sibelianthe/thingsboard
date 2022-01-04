@@ -24,6 +24,7 @@ import { Router } from '@angular/router';
 import { DialogComponent } from '@app/shared/components/dialog.component';
 import { UtilsService } from '@core/services/utils.service';
 import { TranslateService } from '@ngx-translate/core';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface EditAlarmDetailsDialogData {
   alarmDetails: string;
@@ -45,6 +46,8 @@ export class EditAlarmDetailsDialogComponent extends DialogComponent<EditAlarmDe
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: EditAlarmDetailsDialogData,
@@ -52,7 +55,9 @@ export class EditAlarmDetailsDialogComponent extends DialogComponent<EditAlarmDe
               public dialogRef: MatDialogRef<EditAlarmDetailsDialogComponent, string>,
               private fb: FormBuilder,
               private utils: UtilsService,
-              public translate: TranslateService) {
+              public translate: TranslateService,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
 
     this.editDetailsFormGroup = this.fb.group({
@@ -64,6 +69,7 @@ export class EditAlarmDetailsDialogComponent extends DialogComponent<EditAlarmDe
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

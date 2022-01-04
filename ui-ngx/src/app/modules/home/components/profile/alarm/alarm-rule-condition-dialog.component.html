@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="conditionFormGroup" (ngSubmit)="save()" style="width: 700px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2>{{ (readonly ? 'device-profile.alarm-rule-condition' : 'device-profile.edit-alarm-rule-condition') | translate }}</h2>
     <span fxFlex></span>
     <button mat-icon-button

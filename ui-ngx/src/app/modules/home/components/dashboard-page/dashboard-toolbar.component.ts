@@ -15,6 +15,7 @@
 ///
 
 import { Component, EventEmitter, Input, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 @Component({
   selector: 'tb-dashboard-toolbar',
@@ -33,10 +34,13 @@ export class DashboardToolbarComponent implements OnInit {
   @Output()
   triggerClick = new EventEmitter<void>();
 
-  constructor() {
+  color = 'primary';
+
+  constructor(private globalVarsService: GlobalVarsService) {
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   onTriggerClick() {

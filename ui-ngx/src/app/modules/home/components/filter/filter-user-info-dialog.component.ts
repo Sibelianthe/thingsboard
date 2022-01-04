@@ -29,6 +29,7 @@ import {
   StringOperation
 } from '@shared/models/query/query.models';
 import { TranslateService } from '@ngx-translate/core';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface FilterUserInfoDialogData {
   key: string;
@@ -52,12 +53,15 @@ export class FilterUserInfoDialogComponent extends
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: FilterUserInfoDialogData,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<FilterUserInfoDialogComponent, KeyFilterPredicateUserInfo>,
               private fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
               private translate: TranslateService) {
     super(store, router, dialogRef);
 
@@ -93,6 +97,7 @@ export class FilterUserInfoDialogComponent extends
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="ruleNodeLinkFormGroup" (ngSubmit)="add()" style="width: 480px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2 translate>rulenode.add-link</h2>
     <span fxFlex></span>
     <div [tb-help]="'ruleEngine'"></div>

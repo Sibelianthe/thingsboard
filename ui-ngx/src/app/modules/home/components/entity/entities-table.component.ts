@@ -64,6 +64,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { TbAnchorComponent } from '@shared/components/tb-anchor.component';
 import { isDefined, isUndefined } from '@core/utils';
 import { HasUUID } from '@shared/models/id/has-uuid';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 @Component({
   selector: 'tb-entities-table',
@@ -120,6 +121,8 @@ export class EntitiesTableComponent extends PageComponent implements AfterViewIn
   private updateDataSubscription: Subscription;
   private viewInited = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               public route: ActivatedRoute,
               public translate: TranslateService,
@@ -127,6 +130,7 @@ export class EntitiesTableComponent extends PageComponent implements AfterViewIn
               private dialogService: DialogService,
               private domSanitizer: DomSanitizer,
               private cd: ChangeDetectorRef,
+              private globalVarsService: GlobalVarsService,
               private componentFactoryResolver: ComponentFactoryResolver) {
     super(store);
   }
@@ -137,6 +141,7 @@ export class EntitiesTableComponent extends PageComponent implements AfterViewIn
     } else {
       this.init(this.route.snapshot.data.entitiesTableConfig);
     }
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   ngOnChanges(changes: SimpleChanges): void {

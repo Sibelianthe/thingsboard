@@ -16,7 +16,7 @@
 
 -->
 <form (ngSubmit)="save()" style="width: 750px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2 translate>{{settings ? 'dashboard.settings' : 'layout.settings'}}</h2>
     <span fxFlex></span>
     <button mat-button mat-icon-button

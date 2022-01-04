@@ -25,6 +25,7 @@ import { DialogComponent } from '@shared/components/dialog.component';
 import { DataKey } from '@shared/models/widget.models';
 import { DataKeysCallbacks } from './data-keys.component.models';
 import { DataKeyConfigComponent } from '@home/components/widget/data-key-config.component';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface DataKeyConfigDialogData {
   dataKey: DataKey;
@@ -49,12 +50,16 @@ export class DataKeyConfigDialogComponent extends DialogComponent<DataKeyConfigD
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: DataKeyConfigDialogData,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<DataKeyConfigDialogComponent, DataKey>,
-              public fb: FormBuilder) {
+              public fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
   }
 
@@ -62,6 +67,7 @@ export class DataKeyConfigDialogComponent extends DialogComponent<DataKeyConfigD
     this.dataKeyFormGroup = this.fb.group({
       dataKey: [this.data.dataKey, [Validators.required]]
     });
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

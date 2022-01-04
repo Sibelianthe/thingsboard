@@ -54,6 +54,7 @@ import { widgetType } from '@shared/models/widget.models';
 import { WidgetService } from '@core/http/widget.service';
 import { TranslateService } from '@ngx-translate/core';
 import { PopoverPlacement, PopoverPlacements } from '@shared/components/popover.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface WidgetActionDialogData {
   isAdd: boolean;
@@ -114,6 +115,8 @@ export class WidgetActionDialogComponent extends DialogComponent<WidgetActionDia
   allStateDisplayTypes = stateDisplayTypes;
   allPopoverPlacements = PopoverPlacements;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               private utils: UtilsService,
@@ -124,7 +127,9 @@ export class WidgetActionDialogComponent extends DialogComponent<WidgetActionDia
               @Inject(MAT_DIALOG_DATA) public data: WidgetActionDialogData,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<WidgetActionDialogComponent, WidgetActionDescriptorInfo>,
-              public fb: FormBuilder) {
+              public fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
     this.isAdd = data.isAdd;
     if (this.isAdd) {
@@ -166,6 +171,7 @@ export class WidgetActionDialogComponent extends DialogComponent<WidgetActionDia
     this.widgetActionFormGroup.get('useShowWidgetActionFunction').valueChanges.subscribe(() => {
       this.updateShowWidgetActionForm();
     });
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   displayShowWidgetActionForm(): boolean {

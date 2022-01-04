@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="entityAliasFormGroup" (ngSubmit)="save()" style="min-width: 480px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2>{{ (isAdd ? 'alias.add' : 'alias.edit') | translate }}</h2>
     <span fxFlex></span>
     <button mat-icon-button

@@ -21,6 +21,7 @@ import { Store } from '@ngrx/store';
 import { AppState } from '@core/core.state';
 import { Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface Lwm2mObjectAddInstancesData {
   instancesId: Set<number>;
@@ -38,11 +39,15 @@ export class Lwm2mObjectAddInstancesDialogComponent extends DialogComponent<Lwm2
   instancesFormGroup: FormGroup;
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: Lwm2mObjectAddInstancesData,
               public dialogRef: MatDialogRef<Lwm2mObjectAddInstancesDialogComponent, object>,
-              public fb: FormBuilder) {
+              public fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
   }
 
@@ -50,6 +55,7 @@ export class Lwm2mObjectAddInstancesDialogComponent extends DialogComponent<Lwm2
     this.instancesFormGroup = this.fb.group({
       instancesIds: [this.data.instancesId]
     });
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   cancel(): void {

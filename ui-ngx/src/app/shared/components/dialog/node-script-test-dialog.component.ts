@@ -42,6 +42,7 @@ import { RuleChainService } from '@core/http/rule-chain.service';
 import { mergeMap } from 'rxjs/operators';
 import { ActionNotificationShow } from '@core/notification/notification.actions';
 import { beautifyJs } from '@shared/models/beautify.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface NodeScriptTestDialogData {
   script: string;
@@ -97,13 +98,17 @@ export class NodeScriptTestDialogComponent extends DialogComponent<NodeScriptTes
 
   contentTypes = ContentType;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: NodeScriptTestDialogData,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<NodeScriptTestDialogComponent, string>,
               public fb: FormBuilder,
-              private ruleChainService: RuleChainService) {
+              private ruleChainService: RuleChainService,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
     this.functionTitle = this.data.functionTitle;
   }
@@ -123,6 +128,7 @@ export class NodeScriptTestDialogComponent extends DialogComponent<NodeScriptTes
         this.nodeScriptTestFormGroup.get('payload').get('msg').patchValue(res, {emitEvent: false});
       }
     );
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   ngAfterViewInit(): void {

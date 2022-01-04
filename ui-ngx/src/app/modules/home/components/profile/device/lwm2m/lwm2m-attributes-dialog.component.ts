@@ -23,6 +23,7 @@ import { Router } from '@angular/router';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm } from '@angular/forms';
 import { AttributesNameValueMap } from '@home/components/profile/device/lwm2m/lwm2m-profile-config.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface Lwm2mAttributesDialogData {
   readonly: boolean;
@@ -48,12 +49,16 @@ export class Lwm2mAttributesDialogComponent
 
   attributeFormGroup: FormGroup;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) private data: Lwm2mAttributesDialogData,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<Lwm2mAttributesDialogComponent, AttributesNameValueMap>,
-              private fb: FormBuilder) {
+              private fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
 
     this.readonly = data.readonly;
@@ -66,6 +71,10 @@ export class Lwm2mAttributesDialogComponent
     if (this.readonly) {
       this.attributeFormGroup.disable({emitEvent: false});
     }
+  }
+
+  ngOnInit() {
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

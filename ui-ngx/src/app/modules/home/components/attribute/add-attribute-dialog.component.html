@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="attributeFormGroup" (ngSubmit)="add()" style="min-width: 400px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2>{{ 'attribute.add' | translate }}</h2>
     <span fxFlex></span>
     <button mat-button mat-icon-button

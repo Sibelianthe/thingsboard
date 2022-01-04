@@ -29,6 +29,7 @@ import { EntityViewService } from '@core/http/entity-view.service';
 import { DialogComponent } from '@shared/components/dialog.component';
 import { Router } from '@angular/router';
 import { EdgeService } from '@core/http/edge.service';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface AssignToCustomerDialogData {
   entityIds: Array<EntityId>;
@@ -53,6 +54,8 @@ export class AssignToCustomerDialogComponent extends
   assignToCustomerTitle: string;
   assignToCustomerText: string;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: AssignToCustomerDialogData,
@@ -62,7 +65,9 @@ export class AssignToCustomerDialogComponent extends
               private entityViewService: EntityViewService,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<AssignToCustomerDialogComponent, boolean>,
-              public fb: FormBuilder) {
+              public fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
   }
 
@@ -88,6 +93,7 @@ export class AssignToCustomerDialogComponent extends
         this.assignToCustomerText = 'entity-view.assign-to-customer-text';
         break;
     }
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

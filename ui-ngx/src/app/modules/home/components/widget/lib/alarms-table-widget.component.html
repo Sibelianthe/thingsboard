@@ -37,7 +37,7 @@
         </button>
       </div>
     </mat-toolbar>
-    <mat-toolbar class="mat-table-toolbar" color="primary" [fxShow]="!alarmsDatasource.selection.isEmpty()">
+    <mat-toolbar class="mat-table-toolbar" [color]="color" [fxShow]="!alarmsDatasource.selection.isEmpty()">
       <div class="mat-toolbar-tools">
                 <span>
                   {{ translate.get('alarm.selected-alarms',

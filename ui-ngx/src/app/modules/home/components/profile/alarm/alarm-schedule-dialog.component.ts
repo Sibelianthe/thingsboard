@@ -25,6 +25,7 @@ import { DialogComponent } from '@app/shared/components/dialog.component';
 import { UtilsService } from '@core/services/utils.service';
 import { TranslateService } from '@ngx-translate/core';
 import { AlarmSchedule } from '@shared/models/device.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface AlarmScheduleDialogData {
   readonly: boolean;
@@ -47,6 +48,8 @@ export class AlarmScheduleDialogComponent extends DialogComponent<AlarmScheduleD
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: AlarmScheduleDialogData,
@@ -54,6 +57,7 @@ export class AlarmScheduleDialogComponent extends DialogComponent<AlarmScheduleD
               public dialogRef: MatDialogRef<AlarmScheduleDialogComponent, AlarmSchedule>,
               private fb: FormBuilder,
               private utils: UtilsService,
+              private globalVarsService: GlobalVarsService,
               public translate: TranslateService) {
     super(store, router, dialogRef);
 
@@ -66,6 +70,7 @@ export class AlarmScheduleDialogComponent extends DialogComponent<AlarmScheduleD
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

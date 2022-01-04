@@ -25,6 +25,7 @@ import { DashboardService } from '@core/http/dashboard.service';
 import { forkJoin, Observable } from 'rxjs';
 import { DialogComponent } from '@shared/components/dialog.component';
 import { Router } from '@angular/router';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export type ManageDashboardCustomersActionType = 'assign' | 'manage' | 'unassign';
 
@@ -55,13 +56,17 @@ export class ManageDashboardCustomersDialogComponent extends
 
   assignedCustomersIds: string[];
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: ManageDashboardCustomersDialogData,
               private dashboardService: DashboardService,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<ManageDashboardCustomersDialogComponent, boolean>,
-              public fb: FormBuilder) {
+              public fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
 
     this.assignedCustomersIds = data.assignedCustomersIds || [];
@@ -88,6 +93,7 @@ export class ManageDashboardCustomersDialogComponent extends
     this.dashboardCustomersFormGroup = this.fb.group({
       assignedCustomerIds: [[...this.assignedCustomersIds]]
     });
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

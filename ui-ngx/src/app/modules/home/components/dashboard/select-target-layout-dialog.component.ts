@@ -21,6 +21,7 @@ import { AppState } from '@core/core.state';
 import { Router } from '@angular/router';
 import { DialogComponent } from '@app/shared/components/dialog.component';
 import { DashboardLayoutId } from '@app/shared/models/dashboard.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 @Component({
   selector: 'tb-select-target-layout-dialog',
@@ -30,13 +31,17 @@ import { DashboardLayoutId } from '@app/shared/models/dashboard.models';
 export class SelectTargetLayoutDialogComponent extends DialogComponent<SelectTargetLayoutDialogComponent, DashboardLayoutId>
   implements OnInit {
 
+    color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
+              private globalVarsService: GlobalVarsService,
               public dialogRef: MatDialogRef<SelectTargetLayoutDialogComponent, DashboardLayoutId>) {
     super(store, router, dialogRef);
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   selectLayout(layoutId: DashboardLayoutId) {

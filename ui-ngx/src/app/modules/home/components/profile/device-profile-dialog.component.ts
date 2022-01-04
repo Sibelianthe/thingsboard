@@ -33,6 +33,7 @@ import { Router } from '@angular/router';
 import { DeviceProfile } from '@shared/models/device.models';
 import { DeviceProfileComponent } from './device-profile.component';
 import { DeviceProfileService } from '@core/http/device-profile.service';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface DeviceProfileDialogData {
   deviceProfile: DeviceProfile;
@@ -55,6 +56,8 @@ export class DeviceProfileDialogComponent extends
 
   @ViewChild('deviceProfileComponent', {static: true}) deviceProfileComponent: DeviceProfileComponent;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: DeviceProfileDialogData,
@@ -62,10 +65,15 @@ export class DeviceProfileDialogComponent extends
               private componentFactoryResolver: ComponentFactoryResolver,
               private injector: Injector,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
+              private globalVarsService: GlobalVarsService,
               private deviceProfileService: DeviceProfileService) {
     super(store, router, dialogRef);
     this.isAdd = this.data.isAdd;
     this.deviceProfile = this.data.deviceProfile;
+  }
+
+  ngOnInit() {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   ngAfterViewInit(): void {

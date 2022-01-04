@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="userFilterFormGroup" (ngSubmit)="save()" style="width: 400px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2>{{ filter.filter }}</h2>
     <span fxFlex></span>
     <button mat-icon-button

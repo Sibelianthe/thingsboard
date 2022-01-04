@@ -29,6 +29,7 @@ import { AppState } from '@core/core.state';
 import { Router } from '@angular/router';
 import { DialogComponent } from '@shared/components/dialog.component';
 import { Dashboard } from '@shared/models/dashboard.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface EmbedDashboardDialogData {
   dashboard: Dashboard;
@@ -56,10 +57,14 @@ export class EmbedDashboardDialogComponent extends DialogComponent<EmbedDashboar
 
   dialogStyle: any = {};
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: EmbedDashboardDialogData,
-              public dialogRef: MatDialogRef<EmbedDashboardDialogComponent>) {
+              public dialogRef: MatDialogRef<EmbedDashboardDialogComponent>,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
     if (this.data.width) {
       this.dialogStyle.width = this.data.width + 'vw';
@@ -70,6 +75,7 @@ export class EmbedDashboardDialogComponent extends DialogComponent<EmbedDashboar
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   close(): void {

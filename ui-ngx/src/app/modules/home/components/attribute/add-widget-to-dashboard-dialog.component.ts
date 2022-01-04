@@ -40,6 +40,7 @@ import { AliasesInfo } from '@shared/models/alias.models';
 import { ItemBufferService } from '@core/services/item-buffer.service';
 import { StateObject } from '@core/api/widget-api.models';
 import { FiltersInfo } from '@shared/models/query/query.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface AddWidgetToDashboardDialogData {
   entityId: EntityId;
@@ -61,6 +62,8 @@ export class AddWidgetToDashboardDialogComponent extends
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: AddWidgetToDashboardDialogData,
@@ -71,6 +74,7 @@ export class AddWidgetToDashboardDialogComponent extends
               private dashboardUtils: DashboardUtilsService,
               private dashboardService: DashboardService,
               private itembuffer: ItemBufferService,
+              private globalVarsService: GlobalVarsService,
               private dialog: MatDialog) {
     super(store, router, dialogRef);
 
@@ -105,6 +109,7 @@ export class AddWidgetToDashboardDialogComponent extends
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

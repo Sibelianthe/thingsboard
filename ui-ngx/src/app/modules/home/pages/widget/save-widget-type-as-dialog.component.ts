@@ -24,6 +24,7 @@ import { Router } from '@angular/router';
 import { WidgetsBundle } from '@shared/models/widgets-bundle.model';
 import { getCurrentAuthUser } from '@core/auth/auth.selectors';
 import { Authority } from '@shared/models/authority.enum';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface SaveWidgetTypeAsDialogResult {
   widgetName: string;
@@ -43,10 +44,14 @@ export class SaveWidgetTypeAsDialogComponent extends
 
   bundlesScope: string;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               public dialogRef: MatDialogRef<SaveWidgetTypeAsDialogComponent, SaveWidgetTypeAsDialogResult>,
-              public fb: FormBuilder) {
+              public fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
 
     const authUser = getCurrentAuthUser(store);
@@ -62,6 +67,7 @@ export class SaveWidgetTypeAsDialogComponent extends
       title: [null, [Validators.required]],
       widgetsBundle: [null, [Validators.required]]
     });
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   cancel(): void {

@@ -23,14 +23,14 @@
                [opened]="!forceFullscreen"
                [style.width]="sidenavOpened && !showText ? '80px' : '250px'">
     <header class="tb-nav-header">
-      <mat-toolbar color="primary" class="tb-nav-header-toolbar">
+      <mat-toolbar [color]="color" class="tb-nav-header-toolbar">
         <div fxFlex="auto" fxLayout="row">
           <img [src]="showText ? logo : favicon"
                aria-label="logo" class="tb-logo-title"/>
         </div>
       </mat-toolbar>
     </header>
-    <mat-toolbar color="primary" fxFlex="0%" class="tb-side-menu-toolbar" fxLayout="column" role="navigation" fxLayoutAlign="space-between">
+    <mat-toolbar [color]="color" fxFlex="0%" class="tb-side-menu-toolbar" fxLayout="column" role="navigation" fxLayoutAlign="space-between">
       <tb-side-menu></tb-side-menu>
       <div flex fxLayoutAlign="center center" style="margin-bottom: .5em;">
         <button *ngIf="sidenavOpened" mat-icon-button (click)="updateShowText()">
@@ -41,7 +41,7 @@
   </mat-sidenav>
   <mat-sidenav-content [style.marginLeft]="!sidenavOpened ? 'unset' : showText ? '250px' : '80px'">
     <div fxLayout="column" role="main" style="height: 100%;">
-      <mat-toolbar fxLayout="row" color="primary" class="mat-elevation-z1 tb-primary-toolbar">
+      <mat-toolbar fxLayout="row" [color]="color" class="mat-elevation-z1 tb-primary-toolbar">
         <button [fxShow]="!forceFullscreen" mat-icon-button id="main"
                 [ngClass]="{'tb-invisible': displaySearchMode()}"
                 fxHide.gt-sm (click)="sidenav.toggle()">

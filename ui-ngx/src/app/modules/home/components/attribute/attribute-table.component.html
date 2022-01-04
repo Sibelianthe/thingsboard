@@ -78,7 +78,7 @@
         </button>
       </div>
     </mat-toolbar>
-    <mat-toolbar class="mat-table-toolbar" color="primary" [fxShow]="mode === 'default' && !dataSource.selection.isEmpty()">
+    <mat-toolbar class="mat-table-toolbar" [color]="color" [fxShow]="mode === 'default' && !dataSource.selection.isEmpty()">
       <div class="mat-toolbar-tools" fxLayout.xs="row wrap">
         <span class="tb-entity-table-info">
           {{ (attributeScope === latestTelemetryTypes.LATEST_TELEMETRY ?
@@ -104,7 +104,7 @@
         </button>
       </div>
     </mat-toolbar>
-    <mat-toolbar class="mat-table-toolbar" color="primary" [fxShow]="mode === 'widget'">
+    <mat-toolbar class="mat-table-toolbar" [color]="color" [fxShow]="mode === 'widget'">
       <div class="mat-toolbar-tools" fxLayoutGap="8px" fxLayout.xs="row wrap">
         <div fxFlex fxLayout="row" fxLayoutAlign="start">
           <span class="tb-details-subtitle">{{ 'widgets-bundle.current' | translate }}</span>

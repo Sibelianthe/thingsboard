@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="widgetFormGroup" (ngSubmit)="add()" style="width: 900px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2 translate>widget.add</h2>
     <span fxFlex>: {{data.widgetInfo.widgetName}}</span>
     <div [tb-help]="helpLinkIdForWidgetType()"></div>
@@ -41,14 +41,14 @@
     </fieldset>
   </div>
   <div mat-dialog-actions fxLayoutAlign="end center">
-    <button mat-button color="primary"
+    <button mat-button [color]="color"
             type="button"
             [disabled]="(isLoading$ | async)"
             (click)="cancel()"
             cdkFocusInitial>
       {{ 'action.cancel' | translate }}
     </button>
-    <button mat-raised-button color="primary"
+    <button mat-raised-button [color]="color"
             type="submit"
             [disabled]="(isLoading$ | async) || widgetFormGroup.invalid">
       {{ 'action.add' | translate }}

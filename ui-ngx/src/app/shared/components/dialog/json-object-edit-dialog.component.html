@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="jsonFormGroup" (ngSubmit)="add()" style="min-width: 400px;">
-  <mat-toolbar fxLayout="row" color="primary">
+  <mat-toolbar fxLayout="row" [color]="color">
     <h2>{{ title }}</h2>
     <span fxFlex></span>
     <button mat-button mat-icon-button

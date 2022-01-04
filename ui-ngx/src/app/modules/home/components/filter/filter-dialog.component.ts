@@ -33,6 +33,7 @@ import { DialogComponent } from '@app/shared/components/dialog.component';
 import { UtilsService } from '@core/services/utils.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Filter, Filters } from '@shared/models/query/query.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface FilterDialogData {
   isAdd: boolean;
@@ -58,6 +59,8 @@ export class FilterDialogComponent extends DialogComponent<FilterDialogComponent
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: FilterDialogData,
@@ -65,6 +68,7 @@ export class FilterDialogComponent extends DialogComponent<FilterDialogComponent
               public dialogRef: MatDialogRef<FilterDialogComponent, Filter>,
               private fb: FormBuilder,
               private utils: UtilsService,
+              private globalVarsService: GlobalVarsService,
               public translate: TranslateService) {
     super(store, router, dialogRef);
     this.isAdd = data.isAdd;
@@ -112,6 +116,7 @@ export class FilterDialogComponent extends DialogComponent<FilterDialogComponent
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

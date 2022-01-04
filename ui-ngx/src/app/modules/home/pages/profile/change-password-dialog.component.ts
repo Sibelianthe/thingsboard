@@ -24,6 +24,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '@core/auth/auth.service';
 import { DialogComponent } from '@shared/components/dialog.component';
 import { Router } from '@angular/router';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 @Component({
   selector: 'tb-change-password-dialog',
@@ -34,17 +35,22 @@ export class ChangePasswordDialogComponent extends DialogComponent<ChangePasswor
 
   changePassword: FormGroup;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               private translate: TranslateService,
               private authService: AuthService,
               public dialogRef: MatDialogRef<ChangePasswordDialogComponent>,
-              public fb: FormBuilder) {
+              public fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
   }
 
   ngOnInit(): void {
     this.buildChangePasswordForm();
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   buildChangePasswordForm() {

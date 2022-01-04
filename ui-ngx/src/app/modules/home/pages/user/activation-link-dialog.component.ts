@@ -22,6 +22,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { ActionNotificationShow } from '@core/notification/notification.actions';
 import { DialogComponent } from '@shared/components/dialog.component';
 import { Router } from '@angular/router';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface ActivationLinkDialogData {
   activationLink: string;
@@ -35,16 +36,21 @@ export class ActivationLinkDialogComponent extends DialogComponent<ActivationLin
 
   activationLink: string;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: ActivationLinkDialogData,
               public dialogRef: MatDialogRef<ActivationLinkDialogComponent, void>,
-              private translate: TranslateService) {
+              private translate: TranslateService,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
     this.activationLink = this.data.activationLink;
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   close(): void {

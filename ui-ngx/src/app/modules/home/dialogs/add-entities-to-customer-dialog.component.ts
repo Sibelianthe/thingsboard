@@ -29,6 +29,7 @@ import { DashboardService } from '@core/http/dashboard.service';
 import { DialogComponent } from '@shared/components/dialog.component';
 import { Router } from '@angular/router';
 import { EdgeService } from '@core/http/edge.service';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface AddEntitiesToCustomerDialogData {
   customerId: string;
@@ -53,6 +54,8 @@ export class AddEntitiesToCustomerDialogComponent extends
   assignToCustomerTitle: string;
   assignToCustomerText: string;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: AddEntitiesToCustomerDialogData,
@@ -63,7 +66,9 @@ export class AddEntitiesToCustomerDialogComponent extends
               private dashboardService: DashboardService,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<AddEntitiesToCustomerDialogComponent, boolean>,
-              public fb: FormBuilder) {
+              public fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
     this.entityType = data.entityType;
   }
@@ -94,6 +99,7 @@ export class AddEntitiesToCustomerDialogComponent extends
         this.assignToCustomerText = 'dashboard.assign-dashboard-to-customer-text';
         break;
     }
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

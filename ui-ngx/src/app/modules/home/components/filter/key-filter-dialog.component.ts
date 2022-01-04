@@ -38,6 +38,7 @@ import { filter, map, mergeMap, publishReplay, refCount, startWith, takeUntil } 
 import { isDefined } from '@core/utils';
 import { EntityId } from '@shared/models/id/entity-id';
 import { DeviceProfileService } from '@core/http/device-profile.service';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface KeyFilterDialogData {
   keyFilter: KeyFilterInfo;
@@ -88,6 +89,8 @@ export class KeyFilterDialogComponent extends
 
   searchText = '';
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: KeyFilterDialogData,
@@ -96,6 +99,7 @@ export class KeyFilterDialogComponent extends
               private deviceProfileService: DeviceProfileService,
               private dialogs: DialogService,
               private translate: TranslateService,
+              private globalVarsService: GlobalVarsService,
               private fb: FormBuilder) {
     super(store, router, dialogRef);
 
@@ -179,6 +183,10 @@ export class KeyFilterDialogComponent extends
     } else {
       this.keyFilterFormGroup.disable({emitEvent: false});
     }
+  }
+
+  ngOnInit() {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   ngOnDestroy() {

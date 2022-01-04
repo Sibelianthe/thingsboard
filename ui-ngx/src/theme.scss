@@ -24,10 +24,12 @@ $tb-dark-primary-color: #9fa8da;
 
 $tb-primary: mat-palette($sib-primary);
 $tb-accent: mat-palette($sib-accent);
+$tb-warn: mat-palette($sib-warn);
 
 $tb-mat-theme: mat-light-theme(
     $tb-primary,
     $tb-accent,
+    $tb-warn,
 );
 
 $primary: mat-color($tb-primary);

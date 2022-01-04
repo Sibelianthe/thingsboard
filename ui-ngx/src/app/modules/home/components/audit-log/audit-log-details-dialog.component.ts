@@ -23,6 +23,7 @@ import { Ace } from 'ace-builds';
 import { DialogComponent } from '@shared/components/dialog.component';
 import { Router } from '@angular/router';
 import { getAce } from '@shared/models/ace/ace.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface AuditLogDetailsDialogData {
   auditLog: AuditLog;
@@ -46,16 +47,20 @@ export class AuditLogDetailsDialogComponent extends DialogComponent<AuditLogDeta
   actionData: string;
   actionFailureDetails: string;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: AuditLogDetailsDialogData,
               public dialogRef: MatDialogRef<AuditLogDetailsDialogComponent>,
+              private globalVarsService: GlobalVarsService,
               private renderer: Renderer2) {
     super(store, router, dialogRef);
   }
 
   ngOnInit(): void {
     this.auditLog = this.data.auditLog;
+    this.globalVarsService.color$.subscribe(color => this.color = color)
     this.displayFailureDetails = this.auditLog.actionStatus === ActionStatus.FAILURE;
     this.actionData = this.auditLog.actionData ? JSON.stringify(this.auditLog.actionData, null, 2) : '';
     this.actionFailureDetails = this.auditLog.actionFailureDetails;

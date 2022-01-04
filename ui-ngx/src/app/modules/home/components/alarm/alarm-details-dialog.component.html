@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="alarmFormGroup" style="min-width: 600px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2>{{ 'alarm.alarm-details' | translate }}</h2>
     <span fxFlex></span>
     <button mat-icon-button
@@ -88,7 +88,7 @@
     </fieldset>
   </div>
   <div mat-dialog-actions fxLayout="row">
-    <button mat-button color="primary"
+    <button mat-button [color]="color"
             type="button"
             [disabled]="(isLoading$ | async)"
             (click)="close()" cdkFocusInitial>
@@ -99,7 +99,7 @@
       <button *ngIf="allowAcknowledgment && (alarm.status === alarmStatuses.ACTIVE_UNACK ||
                                              alarm.status === alarmStatuses.CLEARED_UNACK)"
               mat-raised-button
-              color="primary"
+              [color]="color"
               type="button"
               (click)="acknowledge()"
               [disabled]="(isLoading$ | async)">
@@ -108,7 +108,7 @@
       <button *ngIf="allowClear && (alarm.status === alarmStatuses.ACTIVE_ACK ||
                                     alarm.status === alarmStatuses.ACTIVE_UNACK)"
               mat-raised-button
-              color="primary"
+              [color]="color"
               type="button"
               (click)="clear()"
               [disabled]="(isLoading$ | async)">

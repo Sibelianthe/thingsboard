@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="filterFormGroup" (ngSubmit)="save()" style="width: 700px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2>{{ (isAdd ? 'filter.add' : 'filter.edit') | translate }}</h2>
     <span fxFlex></span>
     <button mat-icon-button

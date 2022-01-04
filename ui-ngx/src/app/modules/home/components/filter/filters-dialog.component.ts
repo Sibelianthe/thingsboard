@@ -39,6 +39,7 @@ import { DialogService } from '@core/services/dialog.service';
 import { deepClone, isUndefined } from '@core/utils';
 import { Filter, Filters, KeyFilterInfo } from '@shared/models/query/query.models';
 import { FilterDialogComponent, FilterDialogData } from '@home/components/filter/filter-dialog.component';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface FiltersDialogData {
   filters: Filters;
@@ -68,6 +69,8 @@ export class FiltersDialogComponent extends DialogComponent<FiltersDialogCompone
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: FiltersDialogData,
@@ -77,6 +80,7 @@ export class FiltersDialogComponent extends DialogComponent<FiltersDialogCompone
               private utils: UtilsService,
               private translate: TranslateService,
               private dialogs: DialogService,
+              private globalVarsService: GlobalVarsService,
               private dialog: MatDialog) {
     super(store, router, dialogRef);
     this.title = data.customTitle ? data.customTitle : 'filter.filters';
@@ -136,6 +140,7 @@ export class FiltersDialogComponent extends DialogComponent<FiltersDialogCompone
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

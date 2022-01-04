@@ -23,6 +23,7 @@ import { FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Valida
 import { Router } from '@angular/router';
 import { DialogComponent } from '@app/shared/components/dialog.component';
 import { ActionNotificationShow } from '@core/notification/notification.actions';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface ImportDialogData {
   importTitle: string;
@@ -45,11 +46,14 @@ export class ImportDialogComponent extends DialogComponent<ImportDialogComponent
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: ImportDialogData,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<ImportDialogComponent>,
+              private globalVarsService: GlobalVarsService,
               private fb: FormBuilder) {
     super(store, router, dialogRef);
     this.importTitle = data.importTitle;
@@ -61,6 +65,7 @@ export class ImportDialogComponent extends DialogComponent<ImportDialogComponent
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

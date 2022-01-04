@@ -21,6 +21,7 @@ import { AppState } from '@core/core.state';
 import { DialogComponent } from '@shared/components/dialog.component';
 import { Router } from '@angular/router';
 import { widgetType, widgetTypesData } from '@shared/models/widget.models';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 @Component({
   selector: 'tb-select-widget-type-dialog',
@@ -36,10 +37,18 @@ export class SelectWidgetTypeDialogComponent extends
 
   widgetTypesDataMap = widgetTypesData;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
-              public dialogRef: MatDialogRef<SelectWidgetTypeDialogComponent, widgetType>) {
+              public dialogRef: MatDialogRef<SelectWidgetTypeDialogComponent, widgetType>,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
+  }
+
+  ngOnInit() {
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   cancel(): void {

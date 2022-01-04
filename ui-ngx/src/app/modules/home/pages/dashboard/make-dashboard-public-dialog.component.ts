@@ -25,6 +25,7 @@ import { ActionNotificationShow } from '@core/notification/notification.actions'
 import { TranslateService } from '@ngx-translate/core';
 import { DialogComponent } from '@shared/components/dialog.component';
 import { Router } from '@angular/router';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface MakeDashboardPublicDialogData {
   dashboard: DashboardInfo;
@@ -41,13 +42,17 @@ export class MakeDashboardPublicDialogComponent extends DialogComponent<MakeDash
 
   publicLink: string;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: MakeDashboardPublicDialogData,
               public translate: TranslateService,
               private dashboardService: DashboardService,
               public dialogRef: MatDialogRef<MakeDashboardPublicDialogComponent>,
-              public fb: FormBuilder) {
+              public fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
 
     this.dashboard = data.dashboard;
@@ -55,6 +60,7 @@ export class MakeDashboardPublicDialogComponent extends DialogComponent<MakeDash
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   close(): void {

@@ -27,6 +27,7 @@ import { getAce } from '@shared/models/ace/ace.models';
 import { Observable } from 'rxjs/internal/Observable';
 import { beautifyJs } from '@shared/models/beautify.models';
 import { of } from 'rxjs';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface EventContentDialogData {
   content: string;
@@ -48,10 +49,13 @@ export class EventContentDialogComponent extends DialogComponent<EventContentDia
   title: string;
   contentType: ContentType;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: EventContentDialogData,
               public dialogRef: MatDialogRef<EventContentDialogComponent>,
+              private globalVarsService: GlobalVarsService,
               private renderer: Renderer2) {
     super(store, router, dialogRef);
   }
@@ -62,6 +66,7 @@ export class EventContentDialogComponent extends DialogComponent<EventContentDia
     this.contentType = this.data.contentType;
 
     this.createEditor(this.eventContentEditorElmRef, this.content);
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   createEditor(editorElementRef: ElementRef, content: string) {

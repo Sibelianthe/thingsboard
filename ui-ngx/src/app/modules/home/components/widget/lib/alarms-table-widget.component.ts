@@ -123,6 +123,7 @@ import {
 } from '@home/components/widget/lib/alarm-filter-panel.component';
 import { entityFields } from '@shared/models/entity.models';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 interface AlarmsTableWidgetSettings extends TableWidgetSettings {
   alarmsTitle: string;
@@ -224,6 +225,8 @@ export class AlarmsTableWidgetComponent extends PageComponent implements OnInit,
     icon: 'filter_list'
   };
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               private elementRef: ElementRef,
               private ngZone: NgZone,
@@ -235,7 +238,9 @@ export class AlarmsTableWidgetComponent extends PageComponent implements OnInit,
               private datePipe: DatePipe,
               private dialog: MatDialog,
               private dialogService: DialogService,
-              private alarmService: AlarmService) {
+              private alarmService: AlarmService,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store);
     this.pageLink = {
       page: 0,
@@ -258,6 +263,7 @@ export class AlarmsTableWidgetComponent extends PageComponent implements OnInit,
         () => this.pageLink.page = 0
       );
     }
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   ngOnDestroy(): void {

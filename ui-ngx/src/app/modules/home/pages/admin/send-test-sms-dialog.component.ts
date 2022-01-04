@@ -25,6 +25,7 @@ import { phoneNumberPattern, SmsProviderConfiguration, TestSmsRequest } from '@s
 import { AdminService } from '@core/http/admin.service';
 import { ActionNotificationShow } from '@core/notification/notification.actions';
 import { TranslateService } from '@ngx-translate/core';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface SendTestSmsDialogData {
   smsProviderConfiguration: SmsProviderConfiguration;
@@ -44,13 +45,17 @@ export class SendTestSmsDialogComponent extends
 
   smsProviderConfiguration = this.data.smsProviderConfiguration;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: SendTestSmsDialogData,
               private adminService: AdminService,
               private translate: TranslateService,
               public dialogRef: MatDialogRef<SendTestSmsDialogComponent>,
-              public fb: FormBuilder) {
+              public fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
   }
 
@@ -59,6 +64,7 @@ export class SendTestSmsDialogComponent extends
       numberTo: [null, [Validators.required, Validators.pattern(phoneNumberPattern)]],
       message: [null, [Validators.required, Validators.maxLength(1600)]]
     });
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   close(): void {

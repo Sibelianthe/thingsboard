@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="widgetActionFormGroup" (ngSubmit)="save()" style="width: 800px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2>{{ (isAdd ? 'widget-config.add-action' : 'widget-config.edit-action' ) | translate }}</h2>
     <span fxFlex></span>
     <button mat-button mat-icon-button

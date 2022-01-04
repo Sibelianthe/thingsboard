@@ -24,6 +24,7 @@ import { UtilsService } from '@core/services/utils.service';
 import { FormControl } from '@angular/forms';
 import { merge, Observable, of } from 'rxjs';
 import { delay, map, mapTo, mergeMap, share, startWith, tap } from 'rxjs/operators';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface MaterialIconsDialogData {
   icon: string;
@@ -46,11 +47,15 @@ export class MaterialIconsDialogComponent extends DialogComponent<MaterialIconsD
 
   showAllControl: FormControl;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: MaterialIconsDialogData,
               private utils: UtilsService,
-              public dialogRef: MatDialogRef<MaterialIconsDialogComponent, string>) {
+              public dialogRef: MatDialogRef<MaterialIconsDialogComponent, string>,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
     this.selectedIcon = data.icon;
     this.showAllControl = new FormControl(false);
@@ -72,6 +77,7 @@ export class MaterialIconsDialogComponent extends DialogComponent<MaterialIconsD
       }),
       share()
     );
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   ngAfterViewInit(): void {

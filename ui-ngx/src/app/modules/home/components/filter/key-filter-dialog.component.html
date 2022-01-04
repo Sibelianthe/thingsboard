@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="keyFilterFormGroup" (ngSubmit)="save()" style="width: 900px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2>{{(data.isAdd ? 'filter.add-key-filter' : (data.readonly ? 'filter.key-filter' : 'filter.edit-key-filter')) | translate}}</h2>
     <span fxFlex></span>
     <button mat-icon-button

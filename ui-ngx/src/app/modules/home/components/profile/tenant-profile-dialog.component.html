@@ -16,7 +16,7 @@
 
 -->
 <form (ngSubmit)="save()" style="width: 600px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2>{{ (isAdd ? 'tenant-profile.add' : 'tenant-profile.edit' ) | translate }}</h2>
     <span fxFlex></span>
     <button mat-icon-button

@@ -14,25 +14,26 @@
 /// limitations under the License.
 ///
 
-import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Store } from '@ngrx/store';
-import { AppState } from '@core/core.state';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable, ReplaySubject } from 'rxjs';
-import { Router } from '@angular/router';
-import { DialogComponent } from '@app/shared/components/dialog.component';
+import { Component, Inject, OnInit } from "@angular/core";
+import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
+import { Store } from "@ngrx/store";
+import { AppState } from "@core/core.state";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { Observable, ReplaySubject } from "rxjs";
+import { Router } from "@angular/router";
+import { DialogComponent } from "@app/shared/components/dialog.component";
 import {
   AlarmInfo,
   alarmSeverityColors,
   alarmSeverityTranslations,
   AlarmStatus,
-  alarmStatusTranslations
-} from '@app/shared/models/alarm.models';
-import { AlarmService } from '@core/http/alarm.service';
-import { tap } from 'rxjs/operators';
-import { DatePipe } from '@angular/common';
-import { TranslateService } from '@ngx-translate/core';
+  alarmStatusTranslations,
+} from "@app/shared/models/alarm.models";
+import { AlarmService } from "@core/http/alarm.service";
+import { tap } from "rxjs/operators";
+import { DatePipe } from "@angular/common";
+import { TranslateService } from "@ngx-translate/core";
+import { GlobalVarsService } from "@app/core/services/global-vars.service";
 
 export interface AlarmDetailsDialogData {
   alarmId: string;
@@ -42,12 +43,13 @@ export interface AlarmDetailsDialogData {
 }
 
 @Component({
-  selector: 'tb-alarm-details-dialog',
-  templateUrl: './alarm-details-dialog.component.html',
-  styleUrls: []
+  selector: "tb-alarm-details-dialog",
+  templateUrl: "./alarm-details-dialog.component.html",
+  styleUrls: [],
 })
-export class AlarmDetailsDialogComponent extends DialogComponent<AlarmDetailsDialogComponent, boolean> implements OnInit {
-
+export class AlarmDetailsDialogComponent
+  extends DialogComponent<AlarmDetailsDialogComponent, boolean>
+  implements OnInit {
   alarmFormGroup: FormGroup;
 
   allowAcknowledgment: boolean;
@@ -55,84 +57,107 @@ export class AlarmDetailsDialogComponent extends DialogComponent<AlarmDetailsDia
   displayDetails: boolean;
 
   loadAlarmSubject = new ReplaySubject<AlarmInfo>();
-  alarm$: Observable<AlarmInfo> = this.loadAlarmSubject.asObservable().pipe(
-    tap(alarm => this.loadAlarmFields(alarm))
-  );
+  alarm$: Observable<AlarmInfo> = this.loadAlarmSubject
+    .asObservable()
+    .pipe(tap((alarm) => this.loadAlarmFields(alarm)));
 
   alarmSeverityColorsMap = alarmSeverityColors;
   alarmStatuses = AlarmStatus;
 
   alarmUpdated = false;
 
-  constructor(protected store: Store<AppState>,
-              protected router: Router,
-              private datePipe: DatePipe,
-              private translate: TranslateService,
-              @Inject(MAT_DIALOG_DATA) public data: AlarmDetailsDialogData,
-              private alarmService: AlarmService,
-              public dialogRef: MatDialogRef<AlarmDetailsDialogComponent, boolean>,
-              public fb: FormBuilder) {
+  color = "primary";
+
+  constructor(
+    protected store: Store<AppState>,
+    protected router: Router,
+    private datePipe: DatePipe,
+    private translate: TranslateService,
+    @Inject(MAT_DIALOG_DATA) public data: AlarmDetailsDialogData,
+    private alarmService: AlarmService,
+    public dialogRef: MatDialogRef<AlarmDetailsDialogComponent, boolean>,
+    private globalVarsService: GlobalVarsService,
+    public fb: FormBuilder
+  ) {
     super(store, router, dialogRef);
 
     this.allowAcknowledgment = data.allowAcknowledgment;
     this.allowClear = data.allowClear;
     this.displayDetails = data.displayDetails;
 
-    this.alarmFormGroup = this.fb.group(
-      {
-        createdTime: [''],
-        originatorName: [''],
-        startTime: [''],
-        endTime: [''],
-        ackTime: [''],
-        clearTime: [''],
-        type: [''],
-        alarmSeverity: [''],
-        alarmStatus: [''],
-        alarmDetails: [null]
-      }
-    );
+    this.alarmFormGroup = this.fb.group({
+      createdTime: [""],
+      originatorName: [""],
+      startTime: [""],
+      endTime: [""],
+      ackTime: [""],
+      clearTime: [""],
+      type: [""],
+      alarmSeverity: [""],
+      alarmStatus: [""],
+      alarmDetails: [null],
+    });
 
     this.loadAlarm();
-
   }
 
   loadAlarm() {
-    this.alarmService.getAlarmInfo(this.data.alarmId).subscribe(
-      alarm => this.loadAlarmSubject.next(alarm)
-    );
+    this.alarmService
+      .getAlarmInfo(this.data.alarmId)
+      .subscribe((alarm) => this.loadAlarmSubject.next(alarm));
   }
 
   loadAlarmFields(alarm: AlarmInfo) {
-    this.alarmFormGroup.get('createdTime')
-      .patchValue(this.datePipe.transform(alarm.createdTime, 'yyyy-MM-dd HH:mm:ss'));
-    this.alarmFormGroup.get('originatorName')
-      .patchValue(alarm.originatorName);
+    this.alarmFormGroup
+      .get("createdTime")
+      .patchValue(
+        this.datePipe.transform(alarm.createdTime, "yyyy-MM-dd HH:mm:ss")
+      );
+    this.alarmFormGroup.get("originatorName").patchValue(alarm.originatorName);
     if (alarm.startTs) {
-      this.alarmFormGroup.get('startTime')
-        .patchValue(this.datePipe.transform(alarm.startTs, 'yyyy-MM-dd HH:mm:ss'));
+      this.alarmFormGroup
+        .get("startTime")
+        .patchValue(
+          this.datePipe.transform(alarm.startTs, "yyyy-MM-dd HH:mm:ss")
+        );
     }
     if (alarm.endTs) {
-      this.alarmFormGroup.get('endTime')
-        .patchValue(this.datePipe.transform(alarm.endTs, 'yyyy-MM-dd HH:mm:ss'));
+      this.alarmFormGroup
+        .get("endTime")
+        .patchValue(
+          this.datePipe.transform(alarm.endTs, "yyyy-MM-dd HH:mm:ss")
+        );
     }
     if (alarm.ackTs) {
-      this.alarmFormGroup.get('ackTime')
-        .patchValue(this.datePipe.transform(alarm.ackTs, 'yyyy-MM-dd HH:mm:ss'));
+      this.alarmFormGroup
+        .get("ackTime")
+        .patchValue(
+          this.datePipe.transform(alarm.ackTs, "yyyy-MM-dd HH:mm:ss")
+        );
     }
     if (alarm.clearTs) {
-      this.alarmFormGroup.get('clearTime')
-        .patchValue(this.datePipe.transform(alarm.clearTs, 'yyyy-MM-dd HH:mm:ss'));
+      this.alarmFormGroup
+        .get("clearTime")
+        .patchValue(
+          this.datePipe.transform(alarm.clearTs, "yyyy-MM-dd HH:mm:ss")
+        );
     }
-    this.alarmFormGroup.get('type').patchValue(alarm.type);
-    this.alarmFormGroup.get('alarmSeverity')
-      .patchValue(this.translate.instant(alarmSeverityTranslations.get(alarm.severity)));
-    this.alarmFormGroup.get('alarmStatus')
-      .patchValue(this.translate.instant(alarmStatusTranslations.get(alarm.status)));
-    this.alarmFormGroup.get('alarmDetails').patchValue(alarm.details);
+    this.alarmFormGroup.get("type").patchValue(alarm.type);
+    this.alarmFormGroup
+      .get("alarmSeverity")
+      .patchValue(
+        this.translate.instant(alarmSeverityTranslations.get(alarm.severity))
+      );
+    this.alarmFormGroup
+      .get("alarmStatus")
+      .patchValue(
+        this.translate.instant(alarmStatusTranslations.get(alarm.status))
+      );
+    this.alarmFormGroup.get("alarmDetails").patchValue(alarm.details);
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe((color) => (this.color = color));
   }
 
   close(): void {
@@ -140,15 +165,16 @@ export class AlarmDetailsDialogComponent extends DialogComponent<AlarmDetailsDia
   }
 
   acknowledge(): void {
-    this.alarmService.ackAlarm(this.data.alarmId).subscribe(
-      () => { this.alarmUpdated = true; this.loadAlarm(); }
-    );
+    this.alarmService.ackAlarm(this.data.alarmId).subscribe(() => {
+      this.alarmUpdated = true;
+      this.loadAlarm();
+    });
   }
 
   clear(): void {
-    this.alarmService.clearAlarm(this.data.alarmId).subscribe(
-      () => { this.alarmUpdated = true; this.loadAlarm(); }
-    );
+    this.alarmService.clearAlarm(this.data.alarmId).subscribe(() => {
+      this.alarmUpdated = true;
+      this.loadAlarm();
+    });
   }
-
 }

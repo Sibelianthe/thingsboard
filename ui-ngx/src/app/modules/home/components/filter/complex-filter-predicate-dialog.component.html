@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="complexFilterFormGroup" (ngSubmit)="save()" style="width: 900px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2 translate>filter.complex-filter</h2>
     <span fxFlex></span>
     <button mat-icon-button

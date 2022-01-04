@@ -34,6 +34,7 @@ import { DashboardState } from '@app/shared/models/dashboard.models';
 import { DashboardStateInfo } from '@home/components/dashboard-page/states/manage-dashboard-states-dialog.component.models';
 import { TranslateService } from '@ngx-translate/core';
 import { DashboardUtilsService } from '@core/services/dashboard-utils.service';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface DashboardStateDialogData {
   states: {[id: string]: DashboardState };
@@ -63,6 +64,8 @@ export class DashboardStateDialogComponent extends
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: DashboardStateDialogData,
@@ -70,6 +73,7 @@ export class DashboardStateDialogComponent extends
               public dialogRef: MatDialogRef<DashboardStateDialogComponent, DashboardStateInfo>,
               private fb: FormBuilder,
               private translate: TranslateService,
+              private globalVarsService: GlobalVarsService,
               private dashboardUtils: DashboardUtilsService) {
     super(store, router, dialogRef);
 
@@ -123,6 +127,7 @@ export class DashboardStateDialogComponent extends
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

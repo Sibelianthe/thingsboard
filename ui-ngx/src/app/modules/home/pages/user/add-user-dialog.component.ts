@@ -32,6 +32,7 @@ import {
 import { TenantId } from '@app/shared/models/id/tenant-id';
 import { DialogComponent } from '@shared/components/dialog.component';
 import { Router } from '@angular/router';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface AddUserDialogData {
   tenantId: string;
@@ -58,12 +59,16 @@ export class AddUserDialogComponent extends DialogComponent<AddUserDialogCompone
 
   @ViewChild(UserComponent, {static: true}) userComponent: UserComponent;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: AddUserDialogData,
               public dialogRef: MatDialogRef<AddUserDialogComponent, User>,
               private userService: UserService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
   }
 
@@ -72,6 +77,7 @@ export class AddUserDialogComponent extends DialogComponent<AddUserDialogCompone
     this.userComponent.isEdit = true;
     this.userComponent.entity = this.user;
     this.detailsForm = this.userComponent.entityForm;
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   cancel(): void {

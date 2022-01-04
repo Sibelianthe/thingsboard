@@ -26,6 +26,7 @@ import { DialogComponent } from '@shared/components/dialog.component';
 import { Router } from '@angular/router';
 import { DeviceProfileService } from '@core/http/device-profile.service';
 import { forkJoin } from 'rxjs';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface DeviceCredentialsDialogData {
   isReadOnly: boolean;
@@ -50,6 +51,8 @@ export class DeviceCredentialsDialogComponent extends
   private deviceCredentials: DeviceCredentials;
   private submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: DeviceCredentialsDialogData,
@@ -57,7 +60,9 @@ export class DeviceCredentialsDialogComponent extends
               private deviceProfileService: DeviceProfileService,
               @SkipSelf() private errorStateMatcher: ErrorStateMatcher,
               public dialogRef: MatDialogRef<DeviceCredentialsDialogComponent, DeviceCredentials>,
-              public fb: FormBuilder) {
+              public fb: FormBuilder,
+              private globalVarsService: GlobalVarsService,
+              ) {
     super(store, router, dialogRef);
 
     this.isReadOnly = data.isReadOnly;
@@ -71,6 +76,7 @@ export class DeviceCredentialsDialogComponent extends
       this.deviceCredentialsFormGroup.disable({emitEvent: false});
     }
     this.loadDeviceCredentials();
+    this.globalVarsService.color$.subscribe(color => this.color = color);
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {

@@ -16,7 +16,7 @@
 
 -->
 <form [formGroup]="dataKeyFormGroup" (ngSubmit)="save()" style="width: 700px;">
-  <mat-toolbar color="primary">
+  <mat-toolbar [color]="color">
     <h2>{{ 'datakey.configuration' | translate }}</h2>
     <span fxFlex></span>
     <button mat-button mat-icon-button

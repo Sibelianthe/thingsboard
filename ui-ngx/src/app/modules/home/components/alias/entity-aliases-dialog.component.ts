@@ -40,6 +40,7 @@ import { ActionNotificationShow } from '@core/notification/notification.actions'
 import { DialogService } from '@core/services/dialog.service';
 import { deepClone, isUndefined } from '@core/utils';
 import { EntityAliasDialogComponent, EntityAliasDialogData } from './entity-alias-dialog.component';
+import { GlobalVarsService } from '@app/core/services/global-vars.service';
 
 export interface EntityAliasesDialogData {
   entityAliases: EntityAliases;
@@ -71,6 +72,8 @@ export class EntityAliasesDialogComponent extends DialogComponent<EntityAliasesD
 
   submitted = false;
 
+  color = 'primary';
+
   constructor(protected store: Store<AppState>,
               protected router: Router,
               @Inject(MAT_DIALOG_DATA) public data: EntityAliasesDialogData,
@@ -80,6 +83,7 @@ export class EntityAliasesDialogComponent extends DialogComponent<EntityAliasesD
               private utils: UtilsService,
               private translate: TranslateService,
               private dialogs: DialogService,
+              private globalVarsService: GlobalVarsService,
               private dialog: MatDialog) {
     super(store, router, dialogRef);
     this.title = data.customTitle ? data.customTitle : 'entity.aliases';
@@ -162,6 +166,7 @@ export class EntityAliasesDialogComponent extends DialogComponent<EntityAliasesD
   }
 
   ngOnInit(): void {
+    this.globalVarsService.color$.subscribe(color => this.color = color)
   }
 
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
