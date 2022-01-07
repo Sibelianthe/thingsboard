@@ -22,7 +22,7 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class GlobalVarsService {
 
-  color$: BehaviorSubject<string> = new BehaviorSubject('primary');
+  color$: BehaviorSubject<string> = new BehaviorSubject('warn');
 
   setColor(themeExists) {
     if (themeExists) this.color$.next('primary')
